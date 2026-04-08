@@ -4,9 +4,14 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module.js';
 import { GRPC_SERVICES, getGrpcOptions } from '@volontariapp/contracts';
 import { AppConfigService } from './config/app-config.service.js';
+import { Logger } from '@volontariapp/logger';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const logger = new Logger({ context: 'MS-USER', format: 'json' });
+  const app = await NestFactory.create(AppModule, {
+    logger,
+  });
+  app.useLogger(logger);
   const configService = app.get(AppConfigService);
 
   app.connectMicroservice(
