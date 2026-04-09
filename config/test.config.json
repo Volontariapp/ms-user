@@ -1,0 +1,7 @@
+{
+  "port": 3101,
+  "logger": {
+    "level": "error",
+    "format": "text"
+  }
+}
