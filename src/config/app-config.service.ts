@@ -14,4 +14,12 @@ export class AppConfigService {
   get msEventUrl() {
     return this.config.microServices.msEventUrl;
   }
+
+  get loggerLevel() {
+    return this.config.logger.level;
+  }
+
+  get loggerFormat() {
+    return this.config.logger.format;
+  }
 }
