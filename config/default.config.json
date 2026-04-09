@@ -1,0 +1,28 @@
+{
+  "db": {
+    "host": "localhost",
+    "port": 5432,
+    "username": "postgres",
+    "password": "password",
+    "database": "ms_user_db",
+    "maxPoolSize": 10,
+    "ssl": false
+  },
+  "logger": {
+    "level": "info",
+    "format": "text"
+  },
+  "auth": {
+    "internalPublicKeyPath": "certs/internal.pub",
+    "accessTokenPrivateKeyPath": "certs/access.key",
+    "refreshTokenPrivateKeyPath": "certs/refresh.key",
+    "accessTokenExpiresIn": "15m",
+    "refreshTokenExpiresIn": "7d"
+  },
+  "microServices": {
+    "msUserUrl": "localhost:5001",
+    "msPostUrl": "localhost:5002",
+    "msEventUrl": "localhost:5003"
+  },
+  "port": 3001
+}

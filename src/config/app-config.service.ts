@@ -1,23 +1,25 @@
-import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import type { CustomConfig } from './base-config.js';
 
-@Injectable()
 export class AppConfigService {
-  constructor(private readonly configService: ConfigService) {}
+  constructor(public readonly config: CustomConfig) {}
 
-  get port(): number {
-    return this.configService.getOrThrow<number>('PORT');
+  get msUserUrl() {
+    return this.config.microServices.msUserUrl;
   }
 
-  get msUserUrl(): string {
-    return this.configService.getOrThrow<string>('MS_USER_URL');
+  get msPostUrl() {
+    return this.config.microServices.msPostUrl;
   }
 
-  get msPostUrl(): string {
-    return this.configService.getOrThrow<string>('MS_POST_URL');
+  get msEventUrl() {
+    return this.config.microServices.msEventUrl;
   }
 
-  get msEventUrl(): string {
-    return this.configService.getOrThrow<string>('MS_EVENT_URL');
+  get loggerLevel() {
+    return this.config.logger.level;
+  }
+
+  get loggerFormat() {
+    return this.config.logger.format;
   }
 }
