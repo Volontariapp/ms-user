@@ -23,10 +23,10 @@ export class InitialUserSchema1776334421317 implements MigrationInterface {
                 "pseudo" varchar(255) NOT NULL,
                 "role" varchar NOT NULL,
                 "password_hash" varchar NOT NULL,
-                "salt" varchar NOT NULL,
                 "bio" text,
                 "logo_path" varchar,
                 "total_impact_score" integer NOT NULL DEFAULT 0,
+                "rna" varchar,
                 CONSTRAINT "UQ_users_email" UNIQUE ("email"),
                 CONSTRAINT "PK_users_id" PRIMARY KEY ("id")
             )
