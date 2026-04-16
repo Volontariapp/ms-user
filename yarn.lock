@@ -3920,6 +3920,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@volontariapp/contracts@npm:3.3.2":
+  version: 3.3.2
+  resolution: "@volontariapp/contracts@npm:3.3.2"
+  dependencies:
+    "@volontariapp/logger": "npm:0.2.2"
+    protobufjs: "npm:7.5.3"
+  checksum: 10c0/c2a267284574312b476430beaee39d996d5fb508ff86b0e39a2815a08ce8c86b257468ccd9900232053dad97333ab7d5466a61ccc6e19dd81e55100807970ec3
+  languageName: node
+  linkType: hard
+
+"@volontariapp/domain-user@npm:2.2.4-next.20260416133335":
+  version: 2.2.4-next.20260416133335
+  resolution: "@volontariapp/domain-user@npm:2.2.4-next.20260416133335"
+  dependencies:
+    "@volontariapp/contracts": "npm:3.3.2"
+    "@volontariapp/logger": "npm:0.2.2"
+  checksum: 10c0/55e3b7039e9f010d5dd16d3cec652bc9aff5d58a75ff98dc406af79609b6d8de5c7abc5762991e5eff6bac15df8d97d5918dc3c1b81c98b33284e68812d603ea
+  languageName: node
+  linkType: hard
+
 "@volontariapp/errors-nest@npm:0.7.3":
   version: 0.7.3
   resolution: "@volontariapp/errors-nest@npm:0.7.3"
@@ -8270,6 +8290,7 @@ __metadata:
     "@volontariapp/config": "npm:1.1.0"
     "@volontariapp/contracts": "npm:2.2.0"
     "@volontariapp/contracts-nest": "npm:2.2.2"
+    "@volontariapp/domain-user": "npm:2.2.4-next.20260416133335"
     "@volontariapp/errors": "npm:0.3.0"
     "@volontariapp/errors-nest": "npm:0.7.3"
     "@volontariapp/eslint-config": "npm:2.0.0"
