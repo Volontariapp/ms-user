@@ -1,8 +1,8 @@
 import { Controller } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
 import {
-  type CreateUserCommand,
-  type CreateUserResponse,
+  type SignUpCommand,
+  type SignUpResponse,
   type UpdateUserCommand,
   type UpdateUserResponse,
   type DeleteUserCommand,
@@ -13,7 +13,7 @@ import { USER_SERVICE_NAME, USER_METHODS } from '@volontariapp/contracts-nest';
 @Controller()
 export class UserCommandController {
   @GrpcMethod(USER_SERVICE_NAME, USER_METHODS.CREATE_USER)
-  createUser(_command: CreateUserCommand): Promise<CreateUserResponse> {
+  signUp(_command: SignUpCommand): Promise<SignUpResponse> {
     throw new Error('Method not implemented.');
   }
 
