@@ -2,9 +2,9 @@
   "db": {
     "host": "localhost",
     "port": 5432,
-    "username": "postgres",
+    "username": "user",
     "password": "password",
-    "database": "ms_user_db",
+    "database": "ms_user",
     "maxPoolSize": 10,
     "ssl": false
   },

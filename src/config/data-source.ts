@@ -1,9 +1,11 @@
 import { DataSource } from 'typeorm';
-import { loadConfig } from '@volontariapp/config';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { existsSync } from 'fs';
 import { CustomConfig } from './base-config.js';
+
+import { loadConfig } from '@volontariapp/config';
+import { EventQueueModel, JobsOutboxModel } from '@volontariapp/database';
 
 function resolveConfigDirectory(): string {
   const currentFileDir = dirname(fileURLToPath(import.meta.url));
@@ -26,6 +28,8 @@ export const AppDataSource = new DataSource({
   database: appConfig.db.database,
   ssl: appConfig.db.ssl ? { rejectUnauthorized: false } : false,
   entities: [
+    EventQueueModel,
+    JobsOutboxModel,
     join(
       dirname(fileURLToPath(import.meta.url)),
       '../../node_modules/@volontariapp/domain-user/dist/**/*.model.js',
