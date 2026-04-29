@@ -26,8 +26,6 @@ class JobsOutboxRepository extends BaseRepository<
   }
 }
 
-
-
 @ApiTags('test-outbox')
 @Controller('test-outbox')
 export class UserTestController {
@@ -43,7 +41,12 @@ export class UserTestController {
 
   @Get()
   @ApiOperation({ summary: 'Test jobs outbox creation' })
-  @ApiQuery({ name: 'x', required: false, type: String, description: 'Number of jobs to create' })
+  @ApiQuery({
+    name: 'x',
+    required: false,
+    type: String,
+    description: 'Number of jobs to create',
+  })
   @ApiResponse({ status: 200, type: TestOutboxResponse })
   async testOutbox(@Query('x') x: string): Promise<TestOutboxResponse> {
     const repository = new JobsOutboxRepository(this.typeormRepository);
@@ -63,7 +66,10 @@ export class UserTestController {
       entity.createdAt = now;
       entity.updatedAt = now;
       entity.target = 'test-target';
-      entity.payload = { message: `hello world ${i + 1}`, index: i };
+      entity.payload = {
+        message: `hello world ${(i + 1).toString()}`,
+        index: i,
+      };
       entity.scheduledAt = now;
       entities.push(entity);
     }
