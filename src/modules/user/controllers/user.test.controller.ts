@@ -1,5 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import { Controller, Get, Query } from '@nestjs/common';
+import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   BaseRepository,
@@ -11,6 +12,7 @@ import {
 } from '@volontariapp/database';
 import { Logger } from '@volontariapp/logger';
 import { JobsOutboxWriter } from '@volontariapp/outbox';
+import { TestOutboxResponse } from '../dto/response/test-outbox.reponse.dto.js';
 
 databaseMapper.registerBidirectional(JobsOutboxModel, JobsOutboxEntity);
 
@@ -24,6 +26,9 @@ class JobsOutboxRepository extends BaseRepository<
   }
 }
 
+
+
+@ApiTags('test-outbox')
 @Controller('test-outbox')
 export class UserTestController {
   private readonly logger = new Logger({
@@ -37,7 +42,10 @@ export class UserTestController {
   ) {}
 
   @Get()
-  async testOutbox(@Query('x') x: string): Promise<{ success: boolean; count: number; ids: string[] }> {
+  @ApiOperation({ summary: 'Test jobs outbox creation' })
+  @ApiQuery({ name: 'x', required: false, type: String, description: 'Number of jobs to create' })
+  @ApiResponse({ status: 200, type: TestOutboxResponse })
+  async testOutbox(@Query('x') x: string): Promise<TestOutboxResponse> {
     const repository = new JobsOutboxRepository(this.typeormRepository);
     const writer = new JobsOutboxWriter(this.logger, repository);
 
