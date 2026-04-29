@@ -4,6 +4,7 @@ import { existsSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { NestFactory } from '@nestjs/core';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module.js';
 import {
   GRPC_MICROSERVICES,
@@ -35,6 +36,15 @@ async function bootstrap() {
     logger,
   });
   const configService = app.get(AppConfigService);
+
+  const config = new DocumentBuilder()
+    .setTitle('User Service')
+    .setDescription('The User Service API description')
+    .setVersion('1.0')
+    .addTag('user')
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document);
 
   app.connectMicroservice(
     getGrpcOptions(
