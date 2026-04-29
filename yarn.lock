@@ -3841,12 +3841,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@volontariapp/auth@npm:2.1.16-snap-27aa4d3":
-  version: 2.1.16-snap-27aa4d3
-  resolution: "@volontariapp/auth@npm:2.1.16-snap-27aa4d3"
+"@volontariapp/auth@npm:2.1.16-snap-66113c9":
+  version: 2.1.16-snap-66113c9
+  resolution: "@volontariapp/auth@npm:2.1.16-snap-66113c9"
   dependencies:
     "@volontariapp/errors": "npm:0.5.0"
-    "@volontariapp/errors-nest": "npm:0.10.1-snap-27aa4d3"
+    "@volontariapp/errors-nest": "npm:0.10.1-snap-66113c9"
     "@volontariapp/logger": "npm:0.2.3"
     jose: "npm:^6.2.2"
     reflect-metadata: "npm:^0.2.2"
@@ -3856,7 +3856,7 @@ __metadata:
     "@nestjs/common": ^10.0.0 || ^11.0.0
     "@nestjs/core": ^10.0.0 || ^11.0.0
     "@nestjs/microservices": ^10.0.0 || ^11.0.0
-  checksum: 10c0/8390eddf956cb3779a45233d39311916ef9c99285ec3846bf10ce3758a4697e496b88213e8754a2cd9b3d715baa8e73a5f17edca69c8dc0ea98a7f22b6b84fc5
+  checksum: 10c0/a23d1425ada6792dd3874fc6cf8c84740b1bd83aab04382d207bf99b1dcd0ab8611fb98108a57ef736c3645b92776bb93dc99d6661c311db2763f2e24a1cb345
   languageName: node
   linkType: hard
 
@@ -4027,25 +4027,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@volontariapp/domain-user@npm:2.3.7-snap-27aa4d3":
-  version: 2.3.7-snap-27aa4d3
-  resolution: "@volontariapp/domain-user@npm:2.3.7-snap-27aa4d3"
+"@volontariapp/domain-user@npm:2.3.7-snap-66113c9":
+  version: 2.3.7-snap-66113c9
+  resolution: "@volontariapp/domain-user@npm:2.3.7-snap-66113c9"
   dependencies:
-    "@volontariapp/auth": "npm:2.1.16-snap-27aa4d3"
+    "@volontariapp/auth": "npm:2.1.16-snap-66113c9"
     "@volontariapp/contracts": "npm:4.0.3"
     "@volontariapp/crypto": "npm:0.3.6"
     "@volontariapp/database": "npm:1.10.0"
     "@volontariapp/errors": "npm:0.5.0"
-    "@volontariapp/errors-nest": "npm:0.10.1-snap-27aa4d3"
+    "@volontariapp/errors-nest": "npm:0.10.1-snap-66113c9"
     "@volontariapp/logger": "npm:0.2.3"
     "@volontariapp/shared": "npm:0.2.0"
-  checksum: 10c0/4a080ffe86d3e1424967e5c55c9f0be6b142f6492dbc7084935243a276135ee9f85822734996ac8c634668c5f5f960a1160aaec6977baa5d20643d1e3d1576e8
+  checksum: 10c0/901a2d105bbe67cd49b260791da1701d45c1cd25b7150074996483521670ff3e6d409f3216a6725864409d96478fdc80c802f00211de759afc1feba8be529b5f
   languageName: node
   linkType: hard
 
-"@volontariapp/errors-nest@npm:0.10.1-snap-27aa4d3":
-  version: 0.10.1-snap-27aa4d3
-  resolution: "@volontariapp/errors-nest@npm:0.10.1-snap-27aa4d3"
+"@volontariapp/errors-nest@npm:0.10.1-snap-66113c9":
+  version: 0.10.1-snap-66113c9
+  resolution: "@volontariapp/errors-nest@npm:0.10.1-snap-66113c9"
   dependencies:
     "@volontariapp/errors": "npm:0.5.0"
     "@volontariapp/logger": "npm:0.2.3"
@@ -4065,7 +4065,7 @@ __metadata:
       optional: true
     "@nestjs/swagger":
       optional: true
-  checksum: 10c0/c079725a9ed1be9e04c0e751147322bb57381dbbf8de96a9f15e9a0bb0417119e72539c92f6f62699239f585052d826c03e8b2895e1802ce2d71667524a1b92a
+  checksum: 10c0/20875a52d1f997eb62d862006a18917eeb044fd2030ca7029eec9bc4a48fdfadbb842919868816e56341a6a08ecf45f7ec63111de5a8a723d3eff04df56d063b
   languageName: node
   linkType: hard
 
@@ -8433,7 +8433,7 @@ __metadata:
     "@volontariapp/contracts": "npm:4.0.2"
     "@volontariapp/contracts-nest": "npm:3.0.3-snap-27aa4d3"
     "@volontariapp/database": "npm:1.7.0"
-    "@volontariapp/domain-user": "npm:2.3.7-snap-27aa4d3"
+    "@volontariapp/domain-user": "npm:2.3.7-snap-66113c9"
     "@volontariapp/errors": "npm:0.4.4"
     "@volontariapp/errors-nest": "npm:0.9.0"
     "@volontariapp/eslint-config": "npm:2.2.2"
