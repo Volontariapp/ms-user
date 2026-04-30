@@ -26,4 +26,7 @@ export class CustomConfig extends BackendConfig {
   @ValidateNested()
   @Type(() => PostgresConfig)
   db!: PostgresConfig;
+
+  @IsDefined()
+  emailEncryptionSecret!: string;
 }
