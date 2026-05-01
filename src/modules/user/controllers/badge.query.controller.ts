@@ -17,7 +17,7 @@ export class BadgeQueryController {
     private readonly badgeTransformer: BadgeTransformer,
   ) {}
 
-  @GrpcMethod(BADGE_SERVICE_NAME, BADGE_QUERY_METHODS.GET_BADGES)
+  @GrpcMethod(BADGE_SERVICE_NAME, BADGE_QUERY_METHODS.GET_BADGE)
   async getBadge(data: GetBadgeQueryDTO): Promise<BadgeResponseDTO> {
     this.logger.log(`gRPC: Getting badge with id: ${data.badgeId}`);
     const badge = await this.badgeService.findById(new BadgeId(data.badgeId));

@@ -14,6 +14,9 @@ import { AppConfigService } from './config/app-config.service.js';
 import { loadConfig } from '@volontariapp/config';
 import { CustomConfig } from './config/base-config.js';
 import { Logger } from '@volontariapp/logger';
+import { registerUserMappings } from '@volontariapp/domain-user';
+
+registerUserMappings();
 
 function resolveConfigDirectory(): string {
   const currentFileDir = dirname(fileURLToPath(import.meta.url));
