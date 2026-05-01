@@ -54,12 +54,8 @@ export class InitialUserSchema1776334421317 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(
-      `ALTER TABLE "user_badges" DROP CONSTRAINT "FK_user_badges_badge"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "user_badges" DROP CONSTRAINT "FK_user_badges_user"`,
-    );
+    await queryRunner.query(`ALTER TABLE "user_badges" DROP CONSTRAINT "FK_user_badges_badge"`);
+    await queryRunner.query(`ALTER TABLE "user_badges" DROP CONSTRAINT "FK_user_badges_user"`);
     await queryRunner.query(`DROP TABLE "user_badges"`);
     await queryRunner.query(`DROP TABLE "users"`);
     await queryRunner.query(`DROP TABLE "badges"`);
