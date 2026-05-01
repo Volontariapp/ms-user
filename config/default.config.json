@@ -16,6 +16,7 @@
     "internalPublicKeyPath": "certs/internal.pub",
     "accessTokenPrivateKeyPath": "certs/access.key",
     "refreshTokenPrivateKeyPath": "certs/refresh.key",
+    "refreshTokenPublicKeyPath": "certs/refresh.pub",
     "accessTokenExpiresIn": "15m",
     "refreshTokenExpiresIn": "7d"
   },

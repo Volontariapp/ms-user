@@ -4401,19 +4401,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@volontariapp/domain-user@npm:2.3.7-snap-e3bade7":
-  version: 2.3.7-snap-e3bade7
-  resolution: "@volontariapp/domain-user@npm:2.3.7-snap-e3bade7"
+"@volontariapp/domain-user@npm:2.3.7-snap-85c1ed0":
+  version: 2.3.7-snap-85c1ed0
+  resolution: "@volontariapp/domain-user@npm:2.3.7-snap-85c1ed0"
   dependencies:
-    "@volontariapp/auth": "npm:2.1.16-snap-e3bade7"
+    "@volontariapp/auth": "npm:3.0.0-snap-85c1ed0"
     "@volontariapp/contracts": "npm:4.0.5"
     "@volontariapp/crypto": "npm:0.3.6"
     "@volontariapp/database": "npm:1.12.0"
     "@volontariapp/errors": "npm:0.5.0"
-    "@volontariapp/errors-nest": "npm:0.10.1-snap-e3bade7"
+    "@volontariapp/errors-nest": "npm:0.10.1-snap-85c1ed0"
     "@volontariapp/logger": "npm:0.2.3"
     "@volontariapp/shared": "npm:0.2.0"
-  checksum: 10c0/7f83586be81b46a59bb4cd243052ba874393a7dd43287c4ce2bc397c7307ef0faf516f9d7b94d2bb86c9e847111247737e8976f560db7e7d8f757534e38b75da
+  checksum: 10c0/5bec2928fa7daaab00b99937d810b5babd2d3fddebd15db9862c6bf6a05cd1a4f0c3298fa8c7ea450f4420f1b8a137e4e3f6501227c91b865cf43cde16a10034
   languageName: node
   linkType: hard
 
@@ -4443,9 +4443,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@volontariapp/errors-nest@npm:0.10.1-snap-e3bade7":
-  version: 0.10.1-snap-e3bade7
-  resolution: "@volontariapp/errors-nest@npm:0.10.1-snap-e3bade7"
+"@volontariapp/errors-nest@npm:0.10.1-snap-85c1ed0":
+  version: 0.10.1-snap-85c1ed0
+  resolution: "@volontariapp/errors-nest@npm:0.10.1-snap-85c1ed0"
   dependencies:
     "@volontariapp/errors": "npm:0.5.0"
     "@volontariapp/logger": "npm:0.2.3"
@@ -4465,7 +4465,7 @@ __metadata:
       optional: true
     "@nestjs/swagger":
       optional: true
-  checksum: 10c0/676cb90fce1209079b76b41164622006b8c95e2f104a706397891c3785545901c30a01b3a2a5b91baf65656771d516c3d65a7acd7513166a233976e917b19667
+  checksum: 10c0/194d2c9c2150f95760acea78dacf51126efed9f515208f950aafe26a22089273d16cb13f31fff21cc4662546dc260f8d62993a17341b2ab2ff0502d474aab754
   languageName: node
   linkType: hard
 
@@ -9350,7 +9350,7 @@ __metadata:
     "@volontariapp/contracts": "npm:4.0.2"
     "@volontariapp/contracts-nest": "npm:3.0.5-snap-e3bade7"
     "@volontariapp/database": "npm:1.7.0"
-    "@volontariapp/domain-user": "npm:2.3.7-snap-e3bade7"
+    "@volontariapp/domain-user": "npm:2.3.7-snap-85c1ed0"
     "@volontariapp/errors": "npm:0.4.4"
     "@volontariapp/errors-nest": "npm:0.9.0"
     "@volontariapp/eslint-config": "npm:2.2.2"
