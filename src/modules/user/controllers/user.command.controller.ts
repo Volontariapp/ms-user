@@ -76,7 +76,7 @@ export class UserCommandController {
     await this.userService.delete(new UserId(data.userId));
   }
 
-  @GrpcMethod(USER_SERVICE_NAME, USER_COMMAND_METHODS.REFRESH_TOKENS)
+  @GrpcMethod(USER_SERVICE_NAME, USER_COMMAND_METHODS.REFRESH_TOKEN)
   async refreshTokens(data: RefreshTokenCommandDTO): Promise<LoginResponseDTO> {
     this.logger.log('gRPC: Refreshing tokens');
     const tokens = await this.authService.refreshTokens(
@@ -85,7 +85,7 @@ export class UserCommandController {
     return { auth: tokens };
   }
 
-  @GrpcMethod(USER_SERVICE_NAME, USER_COMMAND_METHODS.ADD_BADGE)
+  @GrpcMethod(USER_SERVICE_NAME, USER_COMMAND_METHODS.ADD_BADGE_TO_USER)
   async addBadge(data: AddBadgeToUserCommandDTO): Promise<void> {
     this.logger.log(
       `gRPC: Adding badge with id: ${data.badgeId} to user with id: ${data.userId}`,
@@ -96,7 +96,7 @@ export class UserCommandController {
     );
   }
 
-  @GrpcMethod(USER_SERVICE_NAME, USER_COMMAND_METHODS.REMOVE_BADGE)
+  @GrpcMethod(USER_SERVICE_NAME, USER_COMMAND_METHODS.REMOVE_BADGE_FROM_USER)
   async removeBadge(data: RemoveBadgeFromUserCommandDTO): Promise<void> {
     this.logger.log(
       `gRPC: Removing badge with id: ${data.badgeId} from user with id: ${data.userId}`,

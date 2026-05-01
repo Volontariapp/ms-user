@@ -54,6 +54,7 @@ async function bootstrap() {
       GRPC_MICROSERVICES.USER,
       configService.config.microServices.msUserUrl,
     ),
+    { inheritAppConfig: true },
   );
 
   await app.startAllMicroservices();
