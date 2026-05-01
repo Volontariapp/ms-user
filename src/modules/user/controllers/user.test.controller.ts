@@ -26,8 +26,6 @@ class JobsOutboxRepository extends BaseRepository<
   }
 }
 
-
-
 @ApiTags('test-outbox')
 @Controller('test-outbox')
 export class UserTestController {
@@ -39,11 +37,16 @@ export class UserTestController {
   constructor(
     @InjectRepository(JobsOutboxModel)
     private readonly typeormRepository: Repository<JobsOutboxModel>,
-  ) {}
+  ) { }
 
   @Get()
   @ApiOperation({ summary: 'Test jobs outbox creation' })
-  @ApiQuery({ name: 'x', required: false, type: String, description: 'Number of jobs to create' })
+  @ApiQuery({
+    name: 'x',
+    required: false,
+    type: String,
+    description: 'Number of jobs to create',
+  })
   @ApiResponse({ status: 200, type: TestOutboxResponse })
   async testOutbox(@Query('x') x: string): Promise<TestOutboxResponse> {
     const repository = new JobsOutboxRepository(this.typeormRepository);
