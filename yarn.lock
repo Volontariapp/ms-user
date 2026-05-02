@@ -4330,19 +4330,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@volontariapp/domain-user@npm:2.4.3-snap-493ba46":
-  version: 2.4.3-snap-493ba46
-  resolution: "@volontariapp/domain-user@npm:2.4.3-snap-493ba46"
+"@volontariapp/domain-user@npm:2.4.3":
+  version: 2.4.3
+  resolution: "@volontariapp/domain-user@npm:2.4.3"
   dependencies:
-    "@volontariapp/auth": "npm:3.0.2-snap-493ba46"
+    "@volontariapp/auth": "npm:3.0.2"
     "@volontariapp/contracts": "npm:4.0.7"
     "@volontariapp/crypto": "npm:0.3.6"
     "@volontariapp/database": "npm:1.12.0"
     "@volontariapp/errors": "npm:0.5.0"
-    "@volontariapp/errors-nest": "npm:0.10.2-snap-493ba46"
+    "@volontariapp/errors-nest": "npm:0.10.2"
     "@volontariapp/logger": "npm:0.2.3"
     "@volontariapp/shared": "npm:0.2.0"
-  checksum: 10c0/1ef65270f9cb720f4e1e10e51fe1894abcc819b88ac31718ea2863aca01fc2846229844ba73a23af70cd3342f85e38be7fb097cace5cd452fb31fd14292add3e
+  checksum: 10c0/58bd5b3e02c7324d2e9582f38dbdce879138fc90ee75c20584ddb7b8e8e0ac398ca7a84393e4e452add174b3476a0c458c7316bcae6015d44735098456cd3c10
   languageName: node
   linkType: hard
 
@@ -4424,9 +4424,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@volontariapp/errors-nest@npm:0.10.2-snap-493ba46":
-  version: 0.10.2-snap-493ba46
-  resolution: "@volontariapp/errors-nest@npm:0.10.2-snap-493ba46"
+"@volontariapp/errors-nest@npm:0.10.2":
+  version: 0.10.2
+  resolution: "@volontariapp/errors-nest@npm:0.10.2"
   dependencies:
     "@volontariapp/errors": "npm:0.5.0"
     "@volontariapp/logger": "npm:0.2.3"
@@ -4446,7 +4446,7 @@ __metadata:
       optional: true
     "@nestjs/swagger":
       optional: true
-  checksum: 10c0/18c7af2fe9d80649845411e21b8e990878ba58f8dbdb7422fbe44078bcc5fa774a83fac41060df69177af474493f3bb013d7310dd27f09f9e88c087f8e0b92f1
+  checksum: 10c0/99ae429f04c370deff69452aedd8b22d0285c1ca1ada7c2ca73696323bb4dc968b4841e4128e0a381661dbb4900e2d21649d808093e864d7a1eabeea0934c89d
   languageName: node
   linkType: hard
 
@@ -9327,7 +9327,7 @@ __metadata:
     "@volontariapp/contracts": "npm:4.0.5"
     "@volontariapp/contracts-nest": "npm:3.0.6"
     "@volontariapp/database": "npm:1.12.0"
-    "@volontariapp/domain-user": "npm:2.4.3-snap-493ba46"
+    "@volontariapp/domain-user": "npm:2.4.3"
     "@volontariapp/errors": "npm:0.5.0"
     "@volontariapp/errors-nest": "npm:0.10.1"
     "@volontariapp/eslint-config": "npm:2.2.2"

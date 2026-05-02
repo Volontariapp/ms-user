@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { BadgeTransformer } from './badge.transformer.js';
-import { SignUpInput, UserEntity } from '@volontariapp/domain-user';
+import { SignUpInput, UserEntity, UpdateUserInput } from '@volontariapp/domain-user';
 import { UserDTO } from '../dto/common/user.dto.js';
 import { SignUpCommandDTO } from '../dto/request/command/sign-up.command.dto.js';
 import { UserRoles } from '@volontariapp/shared';
+import { UpdateUserCommandDTO } from '../dto/request/command/update-user.command.dto.js';
 
 @Injectable()
 export class UserTransformer {
@@ -62,5 +63,16 @@ export class UserTransformer {
       command.organisationInfo?.rna,
     );
     return signUpInput;
+  }
+
+  toUpdateUserInput(dto: UpdateUserCommandDTO): UpdateUserInput {
+    return new UpdateUserInput({
+      pseudo: dto.pseudo,
+      bio: dto.bio,
+      logoPath: dto.logoPath,
+      rna: dto.organisationInfo?.rna,
+      previousPassword: dto.previousPassword,
+      newPassword: dto.newPassword,
+    });
   }
 }
