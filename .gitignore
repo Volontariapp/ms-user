@@ -1,4 +1,5 @@
 # compiled output
+
 /dist
 /node_modules
 /build
@@ -60,7 +61,6 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 !.yarn/releases
 !.yarn/plugins
 .gitnexus
-
 # Keys and credentials
 *.pem
 *.key
