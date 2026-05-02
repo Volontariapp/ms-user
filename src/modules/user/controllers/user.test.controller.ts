@@ -16,11 +16,7 @@ import { TestOutboxResponse } from '../dto/response/test-outbox.reponse.dto.js';
 
 databaseMapper.registerBidirectional(JobsOutboxModel, JobsOutboxEntity);
 
-class JobsOutboxRepository extends BaseRepository<
-  JobsOutboxModel,
-  JobsOutboxEntity,
-  string
-> {
+class JobsOutboxRepository extends BaseRepository<JobsOutboxModel, JobsOutboxEntity, string> {
   constructor(repository: Repository<JobsOutboxModel>) {
     super(repository, JobsOutboxEntity, JobsOutboxModel);
   }
@@ -37,7 +33,7 @@ export class UserTestController {
   constructor(
     @InjectRepository(JobsOutboxModel)
     private readonly typeormRepository: Repository<JobsOutboxModel>,
-  ) { }
+  ) {}
 
   @Get()
   @ApiOperation({ summary: 'Test jobs outbox creation' })
@@ -66,7 +62,7 @@ export class UserTestController {
       entity.createdAt = now;
       entity.updatedAt = now;
       entity.target = 'test-target';
-      entity.payload = { message: `hello world ${i + 1}`, index: i };
+      entity.payload = { message: `hello world` };
       entity.scheduledAt = now;
       entities.push(entity);
     }

@@ -1,11 +1,5 @@
 import type { SignUpCommand } from '@volontariapp/contracts-nest';
-import {
-  IsEmail,
-  IsOptional,
-  IsPhoneNumber,
-  IsString,
-  ValidateNested,
-} from 'class-validator';
+import { IsEmail, IsOptional, IsPhoneNumber, IsString, ValidateNested } from 'class-validator';
 import { OrganisationInfoDTO } from '../../common/organisation-info.dto.js';
 import { Type } from 'class-transformer';
 
