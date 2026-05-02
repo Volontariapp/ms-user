@@ -55,8 +55,8 @@ export class UserCommandController {
   @GrpcMethod(USER_SERVICE_NAME, USER_COMMAND_METHODS.UPDATE_USER)
   async updateUser(data: UpdateUserCommandDTO): Promise<UpdateUserResponseDTO> {
     this.logger.log('gRPC: Updating user with id: ' + data.userId);
-    const partial = this.userTransformer.fromUserDTO(data);
-    const entity = await this.userService.update(new UserId(data.userId), partial);
+    const input = this.userTransformer.toUpdateUserInput(data);
+    const entity = await this.userService.update(new UserId(data.userId), input);
     return {
       user: this.userTransformer.toUserDTO(entity),
     };

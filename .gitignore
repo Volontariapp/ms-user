@@ -61,6 +61,10 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 !.yarn/releases
 !.yarn/plugins
 .gitnexus
+<<<<<<< HEAD
+=======
+
+>>>>>>> feat/controller
 # Keys and credentials
 *.pem
 *.key
