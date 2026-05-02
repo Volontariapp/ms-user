@@ -6,10 +6,7 @@ import { fileURLToPath } from 'url';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module.js';
-import {
-  GRPC_MICROSERVICES,
-  getGrpcOptions,
-} from '@volontariapp/contracts-nest';
+import { GRPC_MICROSERVICES, getGrpcOptions } from '@volontariapp/contracts-nest';
 import { AppConfigService } from './config/app-config.service.js';
 import { loadConfig } from '@volontariapp/config';
 import { CustomConfig } from './config/base-config.js';
@@ -50,10 +47,7 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   app.connectMicroservice(
-    getGrpcOptions(
-      GRPC_MICROSERVICES.USER,
-      configService.config.microServices.msUserUrl,
-    ),
+    getGrpcOptions(GRPC_MICROSERVICES.USER, configService.config.microServices.msUserUrl),
     { inheritAppConfig: true },
   );
 

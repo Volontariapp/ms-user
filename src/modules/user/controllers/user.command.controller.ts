@@ -1,9 +1,6 @@
 import { Controller } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
-import {
-  USER_SERVICE_NAME,
-  USER_COMMAND_METHODS,
-} from '@volontariapp/contracts-nest';
+import { USER_SERVICE_NAME, USER_COMMAND_METHODS } from '@volontariapp/contracts-nest';
 import { Logger } from '@volontariapp/logger';
 import {
   AuthService,
@@ -51,9 +48,7 @@ export class UserCommandController {
   @GrpcMethod(USER_SERVICE_NAME, USER_COMMAND_METHODS.LOGIN)
   async login(data: LoginCommandDTO): Promise<LoginResponseDTO> {
     this.logger.log('gRPC: Logging in user with email: ' + data.email);
-    const tokens = await this.authService.logIn(
-      new LoginInput(data.email, data.password),
-    );
+    const tokens = await this.authService.logIn(new LoginInput(data.email, data.password));
     return { auth: tokens };
   }
 
@@ -61,10 +56,7 @@ export class UserCommandController {
   async updateUser(data: UpdateUserCommandDTO): Promise<UpdateUserResponseDTO> {
     this.logger.log('gRPC: Updating user with id: ' + data.userId);
     const partial = this.userTransformer.fromUserDTO(data);
-    const entity = await this.userService.update(
-      new UserId(data.userId),
-      partial,
-    );
+    const entity = await this.userService.update(new UserId(data.userId), partial);
     return {
       user: this.userTransformer.toUserDTO(entity),
     };
@@ -79,21 +71,14 @@ export class UserCommandController {
   @GrpcMethod(USER_SERVICE_NAME, USER_COMMAND_METHODS.REFRESH_TOKEN)
   async refreshTokens(data: RefreshTokenCommandDTO): Promise<LoginResponseDTO> {
     this.logger.log('gRPC: Refreshing tokens');
-    const tokens = await this.authService.refreshTokens(
-      new RefreshTokensInput(data.refreshToken),
-    );
+    const tokens = await this.authService.refreshTokens(new RefreshTokensInput(data.refreshToken));
     return { auth: tokens };
   }
 
   @GrpcMethod(USER_SERVICE_NAME, USER_COMMAND_METHODS.ADD_BADGE_TO_USER)
   async addBadge(data: AddBadgeToUserCommandDTO): Promise<void> {
-    this.logger.log(
-      `gRPC: Adding badge with id: ${data.badgeId} to user with id: ${data.userId}`,
-    );
-    await this.userService.addBadgeToUser(
-      new UserId(data.userId),
-      new BadgeId(data.badgeId),
-    );
+    this.logger.log(`gRPC: Adding badge with id: ${data.badgeId} to user with id: ${data.userId}`);
+    await this.userService.addBadgeToUser(new UserId(data.userId), new BadgeId(data.badgeId));
   }
 
   @GrpcMethod(USER_SERVICE_NAME, USER_COMMAND_METHODS.REMOVE_BADGE_FROM_USER)
@@ -101,19 +86,12 @@ export class UserCommandController {
     this.logger.log(
       `gRPC: Removing badge with id: ${data.badgeId} from user with id: ${data.userId}`,
     );
-    await this.userService.removeBadgeFromUser(
-      new UserId(data.userId),
-      new BadgeId(data.badgeId),
-    );
+    await this.userService.removeBadgeFromUser(new UserId(data.userId), new BadgeId(data.badgeId));
   }
 
   @GrpcMethod(USER_SERVICE_NAME, USER_COMMAND_METHODS.INCREMENT_IMPACT_SCORE)
-  async incrementImpactScore(
-    data: IncrementImpactScoreCommandDTO,
-  ): Promise<void> {
-    this.logger.log(
-      `gRPC: Incrementing impact score for user with id: ${data.userId}`,
-    );
+  async incrementImpactScore(data: IncrementImpactScoreCommandDTO): Promise<void> {
+    this.logger.log(`gRPC: Incrementing impact score for user with id: ${data.userId}`);
     await this.userService.incrementImpactScore(
       new UserId(data.userId),
       new ImpactScore(data.scoreIncrement),

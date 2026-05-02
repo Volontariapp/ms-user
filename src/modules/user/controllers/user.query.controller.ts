@@ -1,18 +1,11 @@
 import { Controller } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
-import {
-  USER_SERVICE_NAME,
-  USER_QUERY_METHODS,
-} from '@volontariapp/contracts-nest';
+import { USER_SERVICE_NAME, USER_QUERY_METHODS } from '@volontariapp/contracts-nest';
 import { GetUserQueryDTO } from '../dto/request/query/get-user.query.dto.js';
 import { UserResponseDTO } from '../dto/response/user.response.dto.js';
 import { Logger } from '@volontariapp/logger';
 import { UserTransformer } from '../transformers/user.transformer.js';
-import {
-  UserId,
-  UserService,
-  PaginationInput,
-} from '@volontariapp/domain-user';
+import { UserId, UserService, PaginationInput } from '@volontariapp/domain-user';
 import { ListUsersQueryDTO } from '../dto/request/query/list-users.query.dto.js';
 import { ListUsersResponseDTO } from '../dto/response/list-users.response.dto.js';
 

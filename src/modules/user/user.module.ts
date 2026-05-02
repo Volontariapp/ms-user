@@ -28,8 +28,7 @@ import { AppConfigService } from '../../config/app-config.service.js';
   providers: [
     {
       provide: AUTH_OPTIONS,
-      useFactory: (configService: AppConfigService): AuthConfig =>
-        configService.config.auth,
+      useFactory: (configService: AppConfigService): AuthConfig => configService.config.auth,
       inject: [AppConfigService],
     },
     {
@@ -39,8 +38,7 @@ import { AppConfigService } from '../../config/app-config.service.js';
     },
     {
       provide: EMAIL_ENCRYPTION_SECRET,
-      useFactory: (configService: AppConfigService): string =>
-        configService.emailEncryptionSecret,
+      useFactory: (configService: AppConfigService): string => configService.emailEncryptionSecret,
       inject: [AppConfigService],
     },
     UserService,
