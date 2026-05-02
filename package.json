@@ -48,13 +48,13 @@
     "@nestjs/typeorm": "^11.0.1",
     "@opentelemetry/api": "^1.9.0",
     "@opentelemetry/core": "^2.6.1",
-    "@volontariapp/auth": "3.0.1",
+    "@volontariapp/auth": "3.1.0",
     "@volontariapp/bridge-nest": "0.3.11",
     "@volontariapp/config": "2.1.0",
     "@volontariapp/contracts": "4.0.5",
     "@volontariapp/contracts-nest": "3.0.6",
     "@volontariapp/database": "1.12.0",
-    "@volontariapp/domain-user": "2.4.3-snap-a5f02b6",
+    "@volontariapp/domain-user": "2.4.4",
     "@volontariapp/errors": "0.5.0",
     "@volontariapp/errors-nest": "0.10.1",
     "@volontariapp/eslint-config": "2.2.2",
@@ -85,12 +85,12 @@
     "@types/jest": "^30.0.0",
     "@types/node": "^22.10.7",
     "@types/supertest": "^6.0.2",
-    "@volontariapp/auth": "3.0.1",
+    "@volontariapp/auth": "3.1.0",
     "@volontariapp/bridge-nest": "0.3.11",
     "@volontariapp/config": "2.1.0",
     "@volontariapp/contracts": "4.0.5",
     "@volontariapp/contracts-nest": "3.0.6",
-    "@volontariapp/domain-user": "2.4.3",
+    "@volontariapp/domain-user": "2.4.4",
     "@volontariapp/errors": "0.5.0",
     "@volontariapp/errors-nest": "0.10.1",
     "@volontariapp/eslint-config": "2.2.2",
@@ -156,7 +156,6 @@
   "resolutions": {
     "glob": "^13.0.6",
     "node-domexception": "1.0.0",
-    "gaxios": "^6.7.1",
-    "@volontariapp/auth": "2.1.16-snap-66113c9"
+    "gaxios": "^6.7.1"
   }
 }
