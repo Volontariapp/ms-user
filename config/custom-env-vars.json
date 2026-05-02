@@ -17,6 +17,7 @@
     "internalPublicKeyPath": "AUTH_INTERNAL_PUBLIC_KEY_PATH",
     "accessTokenPrivateKeyPath": "AUTH_ACCESS_TOKEN_PRIVATE_KEY_PATH",
     "refreshTokenPrivateKeyPath": "AUTH_REFRESH_TOKEN_PRIVATE_KEY_PATH",
+    "refreshTokenPublicKeyPath": "AUTH_REFRESH_TOKEN_PUBLIC_KEY_PATH",
     "accessTokenExpiresIn": "AUTH_ACCESS_TOKEN_EXPIRES_IN",
     "refreshTokenExpiresIn": "AUTH_REFRESH_TOKEN_EXPIRES_IN"
   },
@@ -24,5 +25,6 @@
     "msUserUrl": "MS_USER_URL",
     "msPostUrl": "MS_POST_URL",
     "msEventUrl": "MS_EVENT_URL"
-  }
+  },
+  "emailEncryptionSecret": "EMAIL_ENCRYPTION_SECRET"
 }

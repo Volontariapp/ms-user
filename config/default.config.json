@@ -16,6 +16,7 @@
     "internalPublicKeyPath": "certs/internal.pub",
     "accessTokenPrivateKeyPath": "certs/access.key",
     "refreshTokenPrivateKeyPath": "certs/refresh.key",
+    "refreshTokenPublicKeyPath": "certs/refresh.pub",
     "accessTokenExpiresIn": "15m",
     "refreshTokenExpiresIn": "7d"
   },
@@ -24,5 +25,6 @@
     "msPostUrl": "localhost:5002",
     "msEventUrl": "localhost:5003"
   },
-  "port": 3001
+  "port": 3001,
+  "emailEncryptionSecret": "my_super_secret_key"
 }

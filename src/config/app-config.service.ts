@@ -22,4 +22,8 @@ export class AppConfigService {
   get loggerFormat() {
     return this.config.logger.format;
   }
+
+  get emailEncryptionSecret() {
+    return this.config.emailEncryptionSecret;
+  }
 }

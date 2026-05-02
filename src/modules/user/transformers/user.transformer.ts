@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { BadgeTransformer } from './badge.transformer.js';
-import { UserEntity } from '@volontariapp/domain-user';
+import { SignUpInput, UserEntity } from '@volontariapp/domain-user';
 import { UserDTO } from '../dto/common/user.dto.js';
 import { SignUpCommandDTO } from '../dto/request/command/sign-up.command.dto.js';
 import { UserRoles } from '@volontariapp/shared';
@@ -50,5 +50,17 @@ export class UserTransformer {
     userDTO.badges = userEntity.badges.map((badge) => this.badgeTransformer.toBadgeDTO(badge));
 
     return userDTO;
+  }
+
+  toSignUpInput(command: SignUpCommandDTO): SignUpInput {
+    const signUpInput = new SignUpInput(
+      command.email,
+      command.password,
+      command.pseudo,
+      command.bio,
+      command.logoPath,
+      command.organisationInfo?.rna,
+    );
+    return signUpInput;
   }
 }

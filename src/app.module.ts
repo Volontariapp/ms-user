@@ -10,12 +10,6 @@ import { GrpcClientModule } from './grpc/grpc-client.module.js';
 
 @Module({
   imports: [DatabaseModule, UserModule, GrpcClientModule],
-  providers: [
-    {
-      provide: APP_FILTER,
-      useClass: GlobalExceptionFilter,
-    },
-  ],
 })
 export class AppModule {
   static register(config: CustomConfig): DynamicModule {

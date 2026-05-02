@@ -79,6 +79,8 @@
     "@nestjs/cli": "^11.0.0",
     "@nestjs/schematics": "^11.0.0",
     "@nestjs/testing": "^11.0.1",
+    "@swc/cli": "^0.8.1",
+    "@swc/core": "^1.15.32",
     "@types/express": "^5.0.0",
     "@types/jest": "^30.0.0",
     "@types/node": "^22.10.7",
@@ -154,6 +156,7 @@
   "resolutions": {
     "glob": "^13.0.6",
     "node-domexception": "1.0.0",
-    "gaxios": "^6.7.1"
+    "gaxios": "^6.7.1",
+    "@volontariapp/auth": "2.1.16-snap-66113c9"
   }
 }
