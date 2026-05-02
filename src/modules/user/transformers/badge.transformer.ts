@@ -30,8 +30,7 @@ export class BadgeTransformer {
     if (dto.name !== undefined && dto.name !== '') badgeEntity.name = dto.name;
     if (dto.slug !== undefined && dto.slug !== '') badgeEntity.slug = dto.slug;
     if (dto.iconPath !== undefined) badgeEntity.iconPath = dto.iconPath;
-    if (dto.description !== undefined)
-      badgeEntity.description = dto.description;
+    if (dto.description !== undefined) badgeEntity.description = dto.description;
 
     return badgeEntity;
   }

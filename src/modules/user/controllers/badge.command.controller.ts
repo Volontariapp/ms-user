@@ -1,15 +1,8 @@
 import { Controller } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
-import {
-  BADGE_COMMAND_METHODS,
-  BADGE_SERVICE_NAME,
-} from '@volontariapp/contracts-nest';
+import { BADGE_COMMAND_METHODS, BADGE_SERVICE_NAME } from '@volontariapp/contracts-nest';
 import { Logger } from '@volontariapp/logger';
-import {
-  BadgeId,
-  BadgeService,
-  CreateBadgeInput,
-} from '@volontariapp/domain-user';
+import { BadgeId, BadgeService, CreateBadgeInput } from '@volontariapp/domain-user';
 import { BadgeTransformer } from '../transformers/badge.transformer.js';
 import { CreateBadgeCommandDTO } from '../dto/request/command/create-badge.command.dto.js';
 import { UpdateBadgeCommandDTO } from '../dto/request/command/update-badge.command.dto.js';
@@ -31,12 +24,7 @@ export class BadgeCommandController {
   async createBadge(data: CreateBadgeCommandDTO): Promise<BadgeResponseDTO> {
     this.logger.log(`gRPC: Creating badge with slug: ${data.slug}`);
     const badge = await this.badgeService.create(
-      new CreateBadgeInput(
-        data.name,
-        data.slug,
-        data.description,
-        data.iconPath,
-      ),
+      new CreateBadgeInput(data.name, data.slug, data.description, data.iconPath),
     );
     return { badge: this.badgeTransformer.toBadgeDTO(badge) };
   }
@@ -45,10 +33,7 @@ export class BadgeCommandController {
   async updateBadge(data: UpdateBadgeCommandDTO): Promise<BadgeResponseDTO> {
     this.logger.log(`gRPC: Updating badge with id: ${data.badgeId}`);
     const partial = this.badgeTransformer.fromUpdateBadgeCommandDTO(data);
-    const badge = await this.badgeService.update(
-      new BadgeId(data.badgeId),
-      partial,
-    );
+    const badge = await this.badgeService.update(new BadgeId(data.badgeId), partial);
     return { badge: this.badgeTransformer.toBadgeDTO(badge) };
   }
 
