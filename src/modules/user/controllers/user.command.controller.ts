@@ -1,5 +1,7 @@
-import { Controller } from '@nestjs/common';
+import { Controller, UseGuards } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
+import { GrpcInternalGuard, CurrentUser } from '@volontariapp/auth';
+import type { AuthUser } from '@volontariapp/auth';
 import { USER_SERVICE_NAME, USER_COMMAND_METHODS } from '@volontariapp/contracts-nest';
 import { Logger } from '@volontariapp/logger';
 import {
@@ -23,6 +25,10 @@ import { RefreshTokenCommandDTO } from '../dto/request/command/refresh-token.com
 import { AddBadgeToUserCommandDTO } from '../dto/request/command/add-badge-to-user.command.dto.js';
 import { RemoveBadgeFromUserCommandDTO } from '../dto/request/command/remove-badge-from-user.command.dto.js';
 import { IncrementImpactScoreCommandDTO } from '../dto/request/command/increment-impact-score.command.dto.js';
+import { AdminUpdateUserCommandDTO } from '../dto/request/command/admin-update-user.command.dto.js';
+import { AdminUpdateUserResponseDTO } from '../dto/response/admin-update-user.response.dto.js';
+import { AdminDeleteUserCommandDTO } from '../dto/request/command/admin-delete-user.command.dto.js';
+import { AdminDeleteUserResponseDTO } from '../dto/response/admin-delete-user.response.dto.js';
 
 @Controller()
 export class UserCommandController {
@@ -52,20 +58,25 @@ export class UserCommandController {
     return { auth: tokens };
   }
 
+  @UseGuards(GrpcInternalGuard)
   @GrpcMethod(USER_SERVICE_NAME, USER_COMMAND_METHODS.UPDATE_USER)
-  async updateUser(data: UpdateUserCommandDTO): Promise<UpdateUserResponseDTO> {
-    this.logger.log('gRPC: Updating user with id: ' + data.userId);
+  async updateUser(
+    data: UpdateUserCommandDTO,
+    @CurrentUser() user: AuthUser,
+  ): Promise<UpdateUserResponseDTO> {
+    this.logger.log('gRPC: Updating user with id: ' + user.id);
     const input = this.userTransformer.toUpdateUserInput(data);
-    const entity = await this.userService.update(new UserId(data.userId), input);
+    const entity = await this.userService.update(new UserId(user.id), input);
     return {
       user: this.userTransformer.toUserDTO(entity),
     };
   }
 
+  @UseGuards(GrpcInternalGuard)
   @GrpcMethod(USER_SERVICE_NAME, USER_COMMAND_METHODS.DELETE_USER)
-  async deleteUser(data: DeleteUserCommandDTO): Promise<void> {
-    this.logger.log('gRPC: Deleting user with id: ' + data.userId);
-    await this.userService.delete(new UserId(data.userId));
+  async deleteUser(_data: DeleteUserCommandDTO, @CurrentUser() user: AuthUser): Promise<void> {
+    this.logger.log('gRPC: Deleting user with id: ' + user.id);
+    await this.userService.delete(new UserId(user.id));
   }
 
   @GrpcMethod(USER_SERVICE_NAME, USER_COMMAND_METHODS.REFRESH_TOKEN)
@@ -96,5 +107,20 @@ export class UserCommandController {
       new UserId(data.userId),
       new ImpactScore(data.scoreIncrement),
     );
+  }
+
+  @GrpcMethod(USER_SERVICE_NAME, 'AdminUpdateUser')
+  async adminUpdateUser(data: AdminUpdateUserCommandDTO): Promise<AdminUpdateUserResponseDTO> {
+    this.logger.log(`gRPC: Admin updating user with id: ${data.userId}`);
+    const input = this.userTransformer.toUpdateUserInput(data);
+    await this.userService.update(new UserId(data.userId), input);
+    return {};
+  }
+
+  @GrpcMethod(USER_SERVICE_NAME, 'AdminDeleteUser')
+  async adminDeleteUser(data: AdminDeleteUserCommandDTO): Promise<AdminDeleteUserResponseDTO> {
+    this.logger.log(`gRPC: Admin deleting user with id: ${data.userId}`);
+    await this.userService.delete(new UserId(data.userId));
+    return {};
   }
 }

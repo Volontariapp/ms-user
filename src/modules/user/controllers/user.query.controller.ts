@@ -1,5 +1,7 @@
-import { Controller } from '@nestjs/common';
+import { Controller, UseGuards } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
+import { GrpcInternalGuard, CurrentUser } from '@volontariapp/auth';
+import type { AuthUser } from '@volontariapp/auth';
 import { USER_SERVICE_NAME, USER_QUERY_METHODS } from '@volontariapp/contracts-nest';
 import { GetUserQueryDTO } from '../dto/request/query/get-user.query.dto.js';
 import { UserResponseDTO } from '../dto/response/user.response.dto.js';
@@ -8,6 +10,8 @@ import { UserTransformer } from '../transformers/user.transformer.js';
 import { UserId, UserService, PaginationInput } from '@volontariapp/domain-user';
 import { ListUsersQueryDTO } from '../dto/request/query/list-users.query.dto.js';
 import { ListUsersResponseDTO } from '../dto/response/list-users.response.dto.js';
+import { AdminGetUserQueryDTO } from '../dto/request/query/admin-get-user.query.dto.js';
+import { AdminUserResponseDTO } from '../dto/response/admin-user.response.dto.js';
 
 @Controller()
 export class UserQueryController {
@@ -18,11 +22,12 @@ export class UserQueryController {
     private readonly userTransformer: UserTransformer,
   ) {}
 
+  @UseGuards(GrpcInternalGuard)
   @GrpcMethod(USER_SERVICE_NAME, USER_QUERY_METHODS.GET_USER)
-  async getUser(data: GetUserQueryDTO): Promise<UserResponseDTO> {
-    this.logger.log('gRPC: Getting user with id: ' + data.userId);
-    const user = await this.userService.findById(new UserId(data.userId));
-    return { user: this.userTransformer.toUserDTO(user) };
+  async getUser(_data: GetUserQueryDTO, @CurrentUser() user: AuthUser): Promise<UserResponseDTO> {
+    this.logger.log('gRPC: Getting user with id: ' + user.id);
+    const userEntity = await this.userService.findById(new UserId(user.id));
+    return { user: this.userTransformer.toUserDTO(userEntity) };
   }
 
   @GrpcMethod(USER_SERVICE_NAME, USER_QUERY_METHODS.LIST_USERS)
@@ -46,5 +51,12 @@ export class UserQueryController {
         totalPages: limit > 0 ? Math.ceil(result.total / limit) : 1,
       },
     };
+  }
+
+  @GrpcMethod(USER_SERVICE_NAME, 'AdminGetUser')
+  async adminGetUser(data: AdminGetUserQueryDTO): Promise<AdminUserResponseDTO> {
+    this.logger.log(`gRPC: Admin getting user with id: ${data.userId}`);
+    const user = await this.userService.findById(new UserId(data.userId));
+    return { user: this.userTransformer.toUserDTO(user) };
   }
 }
