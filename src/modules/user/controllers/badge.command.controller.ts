@@ -1,5 +1,5 @@
 import { Controller } from '@nestjs/common';
-import { GrpcMethod } from '@nestjs/microservices';
+import { GrpcMethod, Payload } from '@nestjs/microservices';
 import { BADGE_COMMAND_METHODS, BADGE_SERVICE_NAME } from '@volontariapp/contracts-nest';
 import { Logger } from '@volontariapp/logger';
 import { BadgeId, BadgeService, CreateBadgeInput } from '@volontariapp/domain-user';
@@ -21,7 +21,7 @@ export class BadgeCommandController {
   ) {}
 
   @GrpcMethod(BADGE_SERVICE_NAME, BADGE_COMMAND_METHODS.CREATE_BADGE)
-  async createBadge(data: CreateBadgeCommandDTO): Promise<BadgeResponseDTO> {
+  async createBadge(@Payload() data: CreateBadgeCommandDTO): Promise<BadgeResponseDTO> {
     this.logger.log(`gRPC: Creating badge with slug: ${data.slug}`);
     const badge = await this.badgeService.create(
       new CreateBadgeInput(data.name, data.slug, data.description, data.iconPath),
@@ -30,7 +30,7 @@ export class BadgeCommandController {
   }
 
   @GrpcMethod(BADGE_SERVICE_NAME, BADGE_COMMAND_METHODS.UPDATE_BADGE)
-  async updateBadge(data: UpdateBadgeCommandDTO): Promise<BadgeResponseDTO> {
+  async updateBadge(@Payload() data: UpdateBadgeCommandDTO): Promise<BadgeResponseDTO> {
     this.logger.log(`gRPC: Updating badge with id: ${data.badgeId}`);
     const partial = this.badgeTransformer.fromUpdateBadgeCommandDTO(data);
     const badge = await this.badgeService.update(new BadgeId(data.badgeId), partial);
@@ -38,7 +38,7 @@ export class BadgeCommandController {
   }
 
   @GrpcMethod(BADGE_SERVICE_NAME, BADGE_COMMAND_METHODS.DELETE_BADGE)
-  async deleteBadge(data: DeleteBadgeCommandDTO): Promise<void> {
+  async deleteBadge(@Payload() data: DeleteBadgeCommandDTO): Promise<void> {
     this.logger.log(`gRPC: Deleting badge with id: ${data.badgeId}`);
     await this.badgeService.delete(new BadgeId(data.badgeId));
   }

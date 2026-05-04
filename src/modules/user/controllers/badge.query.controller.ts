@@ -1,5 +1,5 @@
 import { Controller } from '@nestjs/common';
-import { GrpcMethod } from '@nestjs/microservices';
+import { GrpcMethod, Payload } from '@nestjs/microservices';
 import { BADGE_QUERY_METHODS, BADGE_SERVICE_NAME } from '@volontariapp/contracts-nest';
 import { Logger } from '@volontariapp/logger';
 import { BadgeId, BadgeService, BadgeSlug } from '@volontariapp/domain-user';
@@ -18,14 +18,14 @@ export class BadgeQueryController {
   ) {}
 
   @GrpcMethod(BADGE_SERVICE_NAME, BADGE_QUERY_METHODS.GET_BADGE)
-  async getBadge(data: GetBadgeQueryDTO): Promise<BadgeResponseDTO> {
+  async getBadge(@Payload() data: GetBadgeQueryDTO): Promise<BadgeResponseDTO> {
     this.logger.log(`gRPC: Getting badge with id: ${data.badgeId}`);
     const badge = await this.badgeService.findById(new BadgeId(data.badgeId));
     return { badge: this.badgeTransformer.toBadgeDTO(badge) };
   }
 
   @GrpcMethod(BADGE_SERVICE_NAME, BADGE_QUERY_METHODS.GET_BADGE_BY_SLUG)
-  async getBadgeBySlug(data: { slug: string }): Promise<BadgeResponseDTO> {
+  async getBadgeBySlug(@Payload() data: { slug: string }): Promise<BadgeResponseDTO> {
     this.logger.log(`gRPC: Getting badge with slug: ${data.slug}`);
     const badge = await this.badgeService.findBySlug(new BadgeSlug(data.slug));
     return { badge: this.badgeTransformer.toBadgeDTO(badge) };

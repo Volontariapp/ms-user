@@ -1,5 +1,5 @@
 import { Controller, UseGuards } from '@nestjs/common';
-import { GrpcMethod } from '@nestjs/microservices';
+import { GrpcMethod, Payload } from '@nestjs/microservices';
 import { GrpcInternalGuard, CurrentUser } from '@volontariapp/auth';
 import type { AuthUser } from '@volontariapp/auth';
 import { USER_SERVICE_NAME, USER_QUERY_METHODS } from '@volontariapp/contracts-nest';
@@ -24,14 +24,17 @@ export class UserQueryController {
 
   @UseGuards(GrpcInternalGuard)
   @GrpcMethod(USER_SERVICE_NAME, USER_QUERY_METHODS.GET_USER)
-  async getUser(_data: GetUserQueryDTO, @CurrentUser() user: AuthUser): Promise<UserResponseDTO> {
+  async getUser(
+    @Payload() _data: GetUserQueryDTO,
+    @CurrentUser() user: AuthUser,
+  ): Promise<UserResponseDTO> {
     this.logger.log('gRPC: Getting user with id: ' + user.id);
     const userEntity = await this.userService.findById(new UserId(user.id));
     return { user: this.userTransformer.toUserDTO(userEntity) };
   }
 
   @GrpcMethod(USER_SERVICE_NAME, USER_QUERY_METHODS.LIST_USERS)
-  async listUsers(data: ListUsersQueryDTO): Promise<ListUsersResponseDTO> {
+  async listUsers(@Payload() data: ListUsersQueryDTO): Promise<ListUsersResponseDTO> {
     this.logger.log('gRPC: Listing all users');
     const pagination = data.pagination
       ? new PaginationInput(
@@ -54,7 +57,7 @@ export class UserQueryController {
   }
 
   @GrpcMethod(USER_SERVICE_NAME, 'AdminGetUser')
-  async adminGetUser(data: AdminGetUserQueryDTO): Promise<AdminUserResponseDTO> {
+  async adminGetUser(@Payload() data: AdminGetUserQueryDTO): Promise<AdminUserResponseDTO> {
     this.logger.log(`gRPC: Admin getting user with id: ${data.userId}`);
     const user = await this.userService.findById(new UserId(data.userId));
     return { user: this.userTransformer.toUserDTO(user) };
