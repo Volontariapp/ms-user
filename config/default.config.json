@@ -26,5 +26,5 @@
     "msEventUrl": "localhost:5003"
   },
   "port": 3001,
-  "emailEncryptionSecret": "my_super_secret_key"
+  "emailEncryptionSecret": "IMTW5JaRnLjHREg5HPxhufbkO5Z1NCYgG7tq+z/DYMw="
 }

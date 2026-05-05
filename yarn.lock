@@ -4203,9 +4203,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@volontariapp/auth@npm:3.2.1":
-  version: 3.2.1
-  resolution: "@volontariapp/auth@npm:3.2.1"
+"@volontariapp/auth@npm:3.2.2":
+  version: 3.2.2
+  resolution: "@volontariapp/auth@npm:3.2.2"
   dependencies:
     "@volontariapp/errors": "npm:0.5.0"
     "@volontariapp/errors-nest": "npm:0.10.2"
@@ -4219,7 +4219,7 @@ __metadata:
     "@nestjs/common": ^10.0.0 || ^11.0.0
     "@nestjs/core": ^10.0.0 || ^11.0.0
     "@nestjs/microservices": ^10.0.0 || ^11.0.0
-  checksum: 10c0/ea213ec259070a606981eddac9e88f8efd92d51c3916b11489c0bd725cc8705d0c67a531a114315fcda2fdcb710fe66e91e161a847994a3ad2188135669d7968
+  checksum: 10c0/1cd21cda55aaaa160921f5ebc98f10ded00f7cd6e1598e3287045ae412cfd64f4aea8cbda648df629048edf79d9af446e9cbdcc2e938426926f151b7d5870994
   languageName: node
   linkType: hard
 
@@ -4363,11 +4363,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@volontariapp/domain-user@npm:2.4.9":
-  version: 2.4.9
-  resolution: "@volontariapp/domain-user@npm:2.4.9"
+"@volontariapp/domain-user@npm:2.5.0":
+  version: 2.5.0
+  resolution: "@volontariapp/domain-user@npm:2.5.0"
   dependencies:
-    "@volontariapp/auth": "npm:3.2.1"
+    "@volontariapp/auth": "npm:3.2.2"
     "@volontariapp/contracts": "npm:4.0.9"
     "@volontariapp/crypto": "npm:0.3.6"
     "@volontariapp/database": "npm:1.14.0"
@@ -4375,7 +4375,7 @@ __metadata:
     "@volontariapp/errors-nest": "npm:0.10.2"
     "@volontariapp/logger": "npm:0.2.3"
     "@volontariapp/shared": "npm:0.3.0"
-  checksum: 10c0/cf48e04b4737339a4324d3c19a8a64dd19194c225996667dab17e5001d3d83658acc64158069289d34157029464ff9b8bae93fd9e4d332536680d61d65b0eace
+  checksum: 10c0/4a9a51c57543498e562ca646ea9e32861d3ceba8c7cd721aae1a7ba66e86fd7e6f0462ffe1ce921e80d2de9a6561c4bbf21b3e94baf1f7fd5be45484071d6f11
   languageName: node
   linkType: hard
 
@@ -9342,13 +9342,13 @@ __metadata:
     "@types/jest": "npm:^30.0.0"
     "@types/node": "npm:^22.10.7"
     "@types/supertest": "npm:^6.0.2"
-    "@volontariapp/auth": "npm:3.2.1"
+    "@volontariapp/auth": "npm:3.2.2"
     "@volontariapp/bridge-nest": "npm:0.3.11"
     "@volontariapp/config": "npm:2.1.0"
     "@volontariapp/contracts": "npm:4.0.9"
     "@volontariapp/contracts-nest": "npm:3.1.1"
     "@volontariapp/database": "npm:1.14.0"
-    "@volontariapp/domain-user": "npm:2.4.9"
+    "@volontariapp/domain-user": "npm:2.5.0"
     "@volontariapp/errors": "npm:0.5.0"
     "@volontariapp/errors-nest": "npm:0.10.2"
     "@volontariapp/eslint-config": "npm:2.2.3"

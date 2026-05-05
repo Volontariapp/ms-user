@@ -9,5 +9,6 @@
   "logger": {
     "level": "debug",
     "format": "text"
-  }
+  },
+  "emailEncryptionSecret": "IMTW5JaRnLjHREg5HPxhufbkO5Z1NCYgG7tq+z/DYMw="
 }
