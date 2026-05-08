@@ -33,7 +33,7 @@ export const AppDataSource = new DataSource({
     join(
       dirname(fileURLToPath(import.meta.url)),
       '../../node_modules/@volontariapp/domain-user/dist/**/*.model.js',
-    ),
+    ), // ???
   ],
   synchronize: false,
   migrations: [join(dirname(fileURLToPath(import.meta.url)), '..', 'migrations', '*.ts')],
