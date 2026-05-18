@@ -12,6 +12,7 @@ import {
 } from '@volontariapp/database';
 import { Logger } from '@volontariapp/logger';
 import { JobsOutboxWriter } from '@volontariapp/outbox';
+import { JobMessagingType } from '@volontariapp/messaging';
 import { TestOutboxResponse } from '../dto/response/test-outbox.reponse.dto.js';
 
 databaseMapper.registerBidirectional(JobsOutboxModel, JobsOutboxEntity);
@@ -77,6 +78,61 @@ export class UserTestController {
       success: true,
       count: entities.length,
       ids: entities.map((e) => e.id),
+    };
+  }
+
+  @Get('welcome-email')
+  @ApiOperation({ summary: 'Push a SendWelcomeEmail job to outbox' })
+  @ApiQuery({
+    name: 'userId',
+    required: true,
+    type: String,
+    description: 'User ID',
+  })
+  @ApiQuery({
+    name: 'email',
+    required: true,
+    type: String,
+    description: 'Email address',
+  })
+  @ApiQuery({
+    name: 'firstName',
+    required: true,
+    type: String,
+    description: 'First Name',
+  })
+  @ApiResponse({ status: 200, type: TestOutboxResponse })
+  async pushWelcomeEmail(
+    @Query('userId') userId: string,
+    @Query('email') email: string,
+    @Query('firstName') firstName: string,
+  ): Promise<TestOutboxResponse> {
+    const repository = new JobsOutboxRepository(this.typeormRepository);
+    const writer = new JobsOutboxWriter(this.logger, repository);
+
+    const now = new Date();
+    const entity = new JobsOutboxEntity();
+    entity.id = randomUUID();
+    entity.type = JobMessagingType.SEND_WELCOME_EMAIL;
+    entity.emitter = 'ms-user';
+    entity.status = OutboxStatus.PENDING;
+    entity.attempts = 0;
+    entity.createdAt = now;
+    entity.updatedAt = now;
+    entity.target = 'user-queue';
+    entity.payload = {
+      userId,
+      email,
+      firstName,
+    };
+    entity.scheduledAt = now;
+
+    await writer.create(entity);
+
+    return {
+      success: true,
+      count: 1,
+      ids: [entity.id],
     };
   }
 }
