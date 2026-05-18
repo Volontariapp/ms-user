@@ -1723,6 +1723,32 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@nestjs/bull-shared@npm:^11.0.4":
+  version: 11.0.4
+  resolution: "@nestjs/bull-shared@npm:11.0.4"
+  dependencies:
+    tslib: "npm:2.8.1"
+  peerDependencies:
+    "@nestjs/common": ^10.0.0 || ^11.0.0
+    "@nestjs/core": ^10.0.0 || ^11.0.0
+  checksum: 10c0/88b819fa8e24033f41b9764712ebe130b1c6b78c9dfecbda1dbdf6c97f9f63a70fd0eb1cde870d2839590f8c712612c3d46ed30732361afe066c93bf320834fd
+  languageName: node
+  linkType: hard
+
+"@nestjs/bullmq@npm:^11.0.4":
+  version: 11.0.4
+  resolution: "@nestjs/bullmq@npm:11.0.4"
+  dependencies:
+    "@nestjs/bull-shared": "npm:^11.0.4"
+    tslib: "npm:2.8.1"
+  peerDependencies:
+    "@nestjs/common": ^10.0.0 || ^11.0.0
+    "@nestjs/core": ^10.0.0 || ^11.0.0
+    bullmq: ^3.0.0 || ^4.0.0 || ^5.0.0
+  checksum: 10c0/be2aed53e06d1c66a9f93e22553973b7037529c376a8d4922ff6d33255edf1e1af1e813a1bd450bcac9375ea56619c301a37cee72bcaef7f5593086eb6350aa1
+  languageName: node
+  linkType: hard
+
 "@nestjs/cli@npm:^11.0.0":
   version: 11.0.21
   resolution: "@nestjs/cli@npm:11.0.21"
@@ -4486,28 +4512,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@volontariapp/database@npm:1.15.1":
-  version: 1.15.1
-  resolution: "@volontariapp/database@npm:1.15.1"
-  dependencies:
-    "@volontariapp/bridge": "npm:1.0.1"
-    "@volontariapp/config": "npm:3.0.1"
-    "@volontariapp/errors": "npm:0.5.1"
-    "@volontariapp/logger": "npm:0.2.4"
-    "@volontariapp/shared": "npm:0.4.0"
-    class-transformer: "npm:^0.5.1"
-    class-validator: "npm:^0.14.1"
-    pg: "npm:^8.20.0"
-    reflect-metadata: "npm:^0.2.2"
-  peerDependencies:
-    typeorm: ^0.3.28
-  checksum: 10c0/83505282fad6e6f113dff3f51ebb62520e866532a46dcb9210415af208d327cdabc2bd3f054e143ab41af9a1fc55586c572283cd0238c21806d0a7f9bf0eee84
-  languageName: node
-  linkType: hard
-
-"@volontariapp/database@npm:1.15.2":
-  version: 1.15.2
-  resolution: "@volontariapp/database@npm:1.15.2"
+"@volontariapp/database@npm:1.16.0":
+  version: 1.16.0
+  resolution: "@volontariapp/database@npm:1.16.0"
   dependencies:
     "@volontariapp/bridge": "npm:1.0.2"
     "@volontariapp/config": "npm:3.1.0"
@@ -4520,7 +4527,7 @@ __metadata:
     reflect-metadata: "npm:^0.2.2"
   peerDependencies:
     typeorm: ^0.3.28
-  checksum: 10c0/74fabcf54b49d4d0b0d2459b68b7890157df37758f8eb52a1ae18cc6bd01edfa25259827fda33820f9eff8a91fc7a35c57369ad78e73313102e4ed46b2f29040
+  checksum: 10c0/355fac97a611aab7b2681b205709f7a5b6071c09f2884cdc0cf575c139ce732e45a3768ec4b68b4f999ea2e75b56316024730766bdfd61ff3f51474910eb442e
   languageName: node
   linkType: hard
 
@@ -5728,6 +5735,20 @@ __metadata:
     base64-js: "npm:^1.3.1"
     ieee754: "npm:^1.2.1"
   checksum: 10c0/2a905fbbcde73cc5d8bd18d1caa23715d5f83a5935867c2329f0ac06104204ba7947be098fe1317fbd8830e26090ff8e764f08cd14fefc977bb248c3487bcbd0
+  languageName: node
+  linkType: hard
+
+"bullmq@npm:^5.76.10":
+  version: 5.76.10
+  resolution: "bullmq@npm:5.76.10"
+  dependencies:
+    cron-parser: "npm:4.9.0"
+    ioredis: "npm:5.10.1"
+    msgpackr: "npm:2.0.1"
+    node-abort-controller: "npm:3.1.1"
+    semver: "npm:7.8.0"
+    tslib: "npm:2.8.1"
+  checksum: 10c0/472ddda20c245b8028dafea9ca996cffcf2c54f9a67862f361bc71c56633bcb1ccefb2b14ac94ba5566202e5f1093682069ab473bd8f0b97e1940ed2393fe4ce
   languageName: node
   linkType: hard
 
@@ -9642,6 +9663,7 @@ __metadata:
     "@grpc/grpc-js": "npm:^1.14.3"
     "@grpc/proto-loader": "npm:^0.8.0"
     "@nestjs/axios": "npm:^4.0.1"
+    "@nestjs/bullmq": "npm:^11.0.4"
     "@nestjs/cli": "npm:^11.0.0"
     "@nestjs/common": "npm:^11.1.17"
     "@nestjs/config": "npm:^4.0.3"
@@ -9666,7 +9688,7 @@ __metadata:
     "@volontariapp/config": "npm:3.1.0"
     "@volontariapp/contracts": "npm:4.0.10"
     "@volontariapp/contracts-nest": "npm:3.1.2"
-    "@volontariapp/database": "npm:1.15.1"
+    "@volontariapp/database": "npm:1.16.0"
     "@volontariapp/domain-user": "npm:2.5.2"
     "@volontariapp/errors": "npm:0.5.1"
     "@volontariapp/errors-nest": "npm:0.11.1"
@@ -9679,6 +9701,7 @@ __metadata:
     "@volontariapp/shared": "npm:0.4.0"
     "@volontariapp/validation-nest": "npm:0.1.2"
     axios: "npm:^1.7.9"
+    bullmq: "npm:^5.76.10"
     class-transformer: "npm:^0.5.1"
     class-validator: "npm:^0.15.1"
     eslint: "npm:^9.18.0"
@@ -9753,6 +9776,18 @@ __metadata:
     msgpackr-extract:
       optional: true
   checksum: 10c0/e9f1460e363dbd8c81a5c1b5829980edea7d76e91d570d094d0a4dae0d8ad12f64dea11b2be15f3d7b48d615fa9d3c9b600a6894fd272526087fa33753b5fd16
+  languageName: node
+  linkType: hard
+
+"msgpackr@npm:2.0.1":
+  version: 2.0.1
+  resolution: "msgpackr@npm:2.0.1"
+  dependencies:
+    msgpackr-extract: "npm:^3.0.2"
+  dependenciesMeta:
+    msgpackr-extract:
+      optional: true
+  checksum: 10c0/683eaaecf4835acb759e393cf5e76dd097354e1f3b35ed260539b4fd4e0da5523b93bbaf8fc1a956a06d9a60aa2571fe210159c6f2a29fd37a9b0fa54863b6a2
   languageName: node
   linkType: hard
 
@@ -11044,6 +11079,15 @@ __metadata:
   bin:
     semver: bin/semver.js
   checksum: 10c0/5215ad0234e2845d4ea5bb9d836d42b03499546ddafb12075566899fc617f68794bb6f146076b6881d755de17d6c6cc73372555879ec7dce2c2feee947866ad2
+  languageName: node
+  linkType: hard
+
+"semver@npm:7.8.0":
+  version: 7.8.0
+  resolution: "semver@npm:7.8.0"
+  bin:
+    semver: bin/semver.js
+  checksum: 10c0/8f096ca9b80ffd47b308d03f9ce8c873e27e2983f36023c559cdc92c51e8433fc23ebbfe57ec9623fc155636a6961ee989501099841ae4bb1babc8d2b3f048cd
   languageName: node
   linkType: hard
 
