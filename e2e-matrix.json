@@ -1,6 +1,6 @@
 {
     "api-gateway": "main",
-    "ms-post": "main",
+    "ms-post": "test/branch-to-delete",
     "ms-event": "main",
     "ms-social": "main"
 }
