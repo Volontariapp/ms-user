@@ -1,5 +1,5 @@
 {
-    "api-gateway": "main",
+    "api-gateway": "fix/ci-e2e-orchestrator",
     "ms-post": "test/branch-to-delete",
     "ms-event": "main",
     "ms-social": "main"
