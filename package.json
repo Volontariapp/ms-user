@@ -139,7 +139,6 @@
     "node": ">=24.14.0"
   },
   "resolutions": {
-    "@volontariapp/database": "1.16.0",
     "glob": "^13.0.6",
     "node-domexception": "1.0.0",
     "gaxios": "^6.7.1"
