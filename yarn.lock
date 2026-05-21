@@ -4498,9 +4498,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@volontariapp/domain-user@npm:2.5.6":
-  version: 2.5.6
-  resolution: "@volontariapp/domain-user@npm:2.5.6"
+"@volontariapp/domain-user@npm:2.5.7":
+  version: 2.5.7
+  resolution: "@volontariapp/domain-user@npm:2.5.7"
   dependencies:
     "@volontariapp/auth": "npm:3.2.5"
     "@volontariapp/contracts": "npm:4.0.11"
@@ -4510,7 +4510,7 @@ __metadata:
     "@volontariapp/errors-nest": "npm:0.11.2"
     "@volontariapp/logger": "npm:0.2.5"
     "@volontariapp/shared": "npm:0.4.1"
-  checksum: 10c0/7f6c1c8ce94cdf2dd06cb25d88c525e270f3211fb34af2139c729dd9593cbbc0e6bf95b1a9261a280641d75988a7e263a4587e07762f4e727914ba2c2dd02be9
+  checksum: 10c0/cb405275da534a8ad111defacac290104d31544006c5366219caa0d6db98bff5ba5a70d30e4c4a804ce0c454b208fc21420bdcf03eda47aaedd7ddad4b79af2b
   languageName: node
   linkType: hard
 
@@ -9515,7 +9515,7 @@ __metadata:
     "@volontariapp/contracts": "npm:4.0.11"
     "@volontariapp/contracts-nest": "npm:3.1.3"
     "@volontariapp/database": "npm:2.0.0"
-    "@volontariapp/domain-user": "npm:2.5.6"
+    "@volontariapp/domain-user": "npm:2.5.7"
     "@volontariapp/errors": "npm:0.5.2"
     "@volontariapp/errors-nest": "npm:0.11.2"
     "@volontariapp/eslint-config": "npm:2.2.4"
