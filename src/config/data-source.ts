@@ -37,5 +37,7 @@ export const AppDataSource = new DataSource({
     UserBadgeModel,
   ],
   synchronize: false,
-  migrations: [join(dirname(fileURLToPath(import.meta.url)), '..', 'migrations', '*.{ts,js}')],
+  migrations: [
+    join(dirname(fileURLToPath(import.meta.url)), '..', 'migrations', '**', '*.{ts,js}'),
+  ],
 });
