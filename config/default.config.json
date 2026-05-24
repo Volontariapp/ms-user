@@ -23,7 +23,9 @@
   "microServices": {
     "msUserUrl": "localhost:5001",
     "msPostUrl": "localhost:5002",
-    "msEventUrl": "localhost:5003"
+    "msEventUrl": "localhost:5003",
+    "msSocialUrl": "localhost:5004",
+    "msWsUrl": "localhost:5005"
   },
   "port": 3001,
   "emailEncryptionSecret": "IMTW5JaRnLjHREg5HPxhufbkO5Z1NCYgG7tq+z/DYMw="
