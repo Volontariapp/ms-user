@@ -13,7 +13,7 @@ import {
 import { Logger } from '@volontariapp/logger';
 import { JobsOutboxWriter } from '@volontariapp/outbox';
 import { JobMessagingType } from '@volontariapp/messaging';
-import { TestOutboxResponse } from '../dto/response/test-outbox.reponse.dto.js';
+import { TestOutboxResponse } from '../../dto/response/test-outbox.reponse.dto.js';
 
 databaseMapper.registerBidirectional(JobsOutboxModel, JobsOutboxEntity);
 

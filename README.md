@@ -14,11 +14,14 @@ Welcome to the **User Microservice** of the Volontariapp ecosystem. This service
 This project uses **GitNexus** to maintain a live knowledge graph of the codebase. This allows for safe refactoring, deep impact analysis, and easier onboarding.
 
 ### 🚀 Visualization
+
 To see the codebase graph:
+
 1. Run `npx gitnexus serve`
 2. Visit [https://gitnexus.vercel.app/](https://gitnexus.vercel.app/)
 
 ### 🛠️ Key Commands
+
 - **Analyze Repo**: `npx gitnexus analyze` (Run after major changes)
 - **Status Check**: `npx gitnexus status`
 - **Impact Analysis**: `npx gitnexus impact <SymbolName>`
@@ -28,16 +31,19 @@ To see the codebase graph:
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 - Node.js (v18+)
 - Yarn
 - Docker (for database dependencies)
 
 ### Installation
+
 ```bash
 yarn install
 ```
 
 ### Running the App
+
 ```bash
 # Development mode
 yarn run start:dev
@@ -47,6 +53,7 @@ yarn run start:prod
 ```
 
 ### Running Tests
+
 ```bash
 # Unit tests
 yarn run test
@@ -72,5 +79,5 @@ This microservice follows a clean architecture pattern with a focus on domain-dr
 ---
 
 ## 📜 License
-This project is [MIT licensed](LICENSE).
 
+This project is [MIT licensed](LICENSE).

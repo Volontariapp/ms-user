@@ -1,12 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserQueryController } from './user.query.controller';
+import { UserQueryController } from '../queries/user.query.controller';
 import { UserService } from '@volontariapp/domain-user';
-import { UserTransformer } from '../transformers/user.transformer';
-import { GetUserQueryDTO } from '../dto/request/query/get-user.query.dto';
-import { AdminGetUserQueryDTO } from '../dto/request/query/admin-get-user.query.dto';
-import { UserFactory } from '../../../__test-utils__/factories/user.factory';
+import { UserTransformer } from '../../transformers/user.transformer';
+import { GetUserQueryDTO } from '../../dto/request/query/get-user.query.dto';
+import { AdminGetUserQueryDTO } from '../../dto/request/query/admin-get-user.query.dto';
+import { UserFactory } from '../../../../__test-utils__/factories/user.factory';
 import type { AuthUser } from '@volontariapp/auth';
 import { JwtService } from '@volontariapp/auth';
+import { SocialRelationshipQueryClientService } from '../../clients/social-relationship.query-client';
 
 describe('UserQueryController', () => {
   let controller: UserQueryController;
@@ -40,6 +41,7 @@ describe('UserQueryController', () => {
         { provide: UserService, useValue: userService },
         { provide: UserTransformer, useValue: userTransformer },
         { provide: JwtService, useValue: { verifyInternal: jest.fn() } },
+        { provide: SocialRelationshipQueryClientService, useValue: {} },
       ],
     }).compile();
 
