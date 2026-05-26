@@ -13,22 +13,22 @@ import {
   UserId,
   UserService,
 } from '@volontariapp/domain-user';
-import { UserTransformer } from '../transformers/user.transformer.js';
-import { SignUpCommandDTO } from '../dto/request/command/sign-up.command.dto.js';
-import { SignUpResponseDTO } from '../dto/response/sign-up.response.dto.js';
-import { LoginCommandDTO } from '../dto/request/command/login.command.dto.js';
-import { LoginResponseDTO } from '../dto/response/login.response.dto.js';
-import { UpdateUserCommandDTO } from '../dto/request/command/update-user.command.dto.js';
-import { UpdateUserResponseDTO } from '../dto/response/update-user.response.dto.js';
-import { DeleteUserCommandDTO } from '../dto/request/command/delete-user.command.dto.js';
-import { RefreshTokenCommandDTO } from '../dto/request/command/refresh-token.command.dto.js';
-import { AddBadgeToUserCommandDTO } from '../dto/request/command/add-badge-to-user.command.dto.js';
-import { RemoveBadgeFromUserCommandDTO } from '../dto/request/command/remove-badge-from-user.command.dto.js';
-import { IncrementImpactScoreCommandDTO } from '../dto/request/command/increment-impact-score.command.dto.js';
-import { AdminUpdateUserCommandDTO } from '../dto/request/command/admin-update-user.command.dto.js';
-import { AdminUpdateUserResponseDTO } from '../dto/response/admin-update-user.response.dto.js';
-import { AdminDeleteUserCommandDTO } from '../dto/request/command/admin-delete-user.command.dto.js';
-import { AdminDeleteUserResponseDTO } from '../dto/response/admin-delete-user.response.dto.js';
+import { UserTransformer } from '../../transformers/user.transformer.js';
+import { SignUpCommandDTO } from '../../dto/request/command/sign-up.command.dto.js';
+import { SignUpResponseDTO } from '../../dto/response/sign-up.response.dto.js';
+import { LoginCommandDTO } from '../../dto/request/command/login.command.dto.js';
+import { LoginResponseDTO } from '../../dto/response/login.response.dto.js';
+import { UpdateUserCommandDTO } from '../../dto/request/command/update-user.command.dto.js';
+import { UpdateUserResponseDTO } from '../../dto/response/update-user.response.dto.js';
+import { DeleteUserCommandDTO } from '../../dto/request/command/delete-user.command.dto.js';
+import { RefreshTokenCommandDTO } from '../../dto/request/command/refresh-token.command.dto.js';
+import { AddBadgeToUserCommandDTO } from '../../dto/request/command/add-badge-to-user.command.dto.js';
+import { RemoveBadgeFromUserCommandDTO } from '../../dto/request/command/remove-badge-from-user.command.dto.js';
+import { IncrementImpactScoreCommandDTO } from '../../dto/request/command/increment-impact-score.command.dto.js';
+import { AdminUpdateUserCommandDTO } from '../../dto/request/command/admin-update-user.command.dto.js';
+import { AdminUpdateUserResponseDTO } from '../../dto/response/admin-update-user.response.dto.js';
+import { AdminDeleteUserCommandDTO } from '../../dto/request/command/admin-delete-user.command.dto.js';
+import { AdminDeleteUserResponseDTO } from '../../dto/response/admin-delete-user.response.dto.js';
 
 @Controller()
 export class UserCommandController {

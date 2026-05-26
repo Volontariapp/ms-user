@@ -3,11 +3,11 @@ import { GrpcMethod, Payload } from '@nestjs/microservices';
 import { BADGE_COMMAND_METHODS, BADGE_SERVICE_NAME } from '@volontariapp/contracts-nest';
 import { Logger } from '@volontariapp/logger';
 import { BadgeId, BadgeService, CreateBadgeInput } from '@volontariapp/domain-user';
-import { BadgeTransformer } from '../transformers/badge.transformer.js';
-import { CreateBadgeCommandDTO } from '../dto/request/command/create-badge.command.dto.js';
-import { UpdateBadgeCommandDTO } from '../dto/request/command/update-badge.command.dto.js';
-import { DeleteBadgeCommandDTO } from '../dto/request/command/delete-badge.command.dto.js';
-import { BadgeResponseDTO } from '../dto/response/badge.response.dto.js';
+import { BadgeTransformer } from '../../transformers/badge.transformer.js';
+import { CreateBadgeCommandDTO } from '../../dto/request/command/create-badge.command.dto.js';
+import { UpdateBadgeCommandDTO } from '../../dto/request/command/update-badge.command.dto.js';
+import { DeleteBadgeCommandDTO } from '../../dto/request/command/delete-badge.command.dto.js';
+import { BadgeResponseDTO } from '../../dto/response/badge.response.dto.js';
 
 @Controller()
 export class BadgeCommandController {

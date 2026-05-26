@@ -15,6 +15,10 @@ export class AppConfigService {
     return this.config.microServices.msEventUrl;
   }
 
+  get msSocialUrl() {
+    return this.config.microServices.msSocialUrl;
+  }
+
   get loggerLevel() {
     return this.config.logger.level;
   }

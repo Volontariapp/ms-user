@@ -3,10 +3,10 @@ import { GrpcMethod, Payload } from '@nestjs/microservices';
 import { BADGE_QUERY_METHODS, BADGE_SERVICE_NAME } from '@volontariapp/contracts-nest';
 import { Logger } from '@volontariapp/logger';
 import { BadgeId, BadgeService, BadgeSlug } from '@volontariapp/domain-user';
-import { BadgeTransformer } from '../transformers/badge.transformer.js';
-import { GetBadgeQueryDTO } from '../dto/request/query/get-badge.query.dto.js';
-import { BadgeResponseDTO } from '../dto/response/badge.response.dto.js';
-import { ListBadgesResponseDTO } from '../dto/response/list-badges.response.dto.js';
+import { BadgeTransformer } from '../../transformers/badge.transformer.js';
+import { GetBadgeQueryDTO } from '../../dto/request/query/get-badge.query.dto.js';
+import { BadgeResponseDTO } from '../../dto/response/badge.response.dto.js';
+import { ListBadgesResponseDTO } from '../../dto/response/list-badges.response.dto.js';
 
 @Controller()
 export class BadgeQueryController {

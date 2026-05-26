@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserCommandController } from './user.command.controller';
+import { UserCommandController } from '../command/user.command.controller';
 import { UserService, AuthService } from '@volontariapp/domain-user';
-import { UserTransformer } from '../transformers/user.transformer';
-import { UpdateUserCommandDTO } from '../dto/request/command/update-user.command.dto';
-import { DeleteUserCommandDTO } from '../dto/request/command/delete-user.command.dto';
-import { AdminUpdateUserCommandDTO } from '../dto/request/command/admin-update-user.command.dto';
-import { AdminDeleteUserCommandDTO } from '../dto/request/command/admin-delete-user.command.dto';
-import { UserFactory } from '../../../__test-utils__/factories/user.factory';
+import { UserTransformer } from '../../transformers/user.transformer';
+import { UpdateUserCommandDTO } from '../../dto/request/command/update-user.command.dto';
+import { DeleteUserCommandDTO } from '../../dto/request/command/delete-user.command.dto';
+import { AdminUpdateUserCommandDTO } from '../../dto/request/command/admin-update-user.command.dto';
+import { AdminDeleteUserCommandDTO } from '../../dto/request/command/admin-delete-user.command.dto';
+import { UserFactory } from '../../../../__test-utils__/factories/user.factory';
 import type { AuthUser } from '@volontariapp/auth';
 import { JwtService } from '@volontariapp/auth';
 
