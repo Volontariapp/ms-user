@@ -10,7 +10,7 @@ import {
   GetMyFollowersResponse,
 } from '@volontariapp/contracts-nest';
 import { firstValueFrom } from 'rxjs';
-import type { Metadata } from '@grpc/grpc-js';
+import { Metadata } from '@grpc/grpc-js';
 import { Logger } from '@volontariapp/logger';
 import { Observable } from 'rxjs';
 
@@ -36,20 +36,32 @@ export class SocialRelationshipQueryClientService implements OnModuleInit {
     this.logger.log('SocialRelationshipQueryClientService initialized');
   }
 
-  async getMyFollows(metadata: Metadata, limit = 10, page = 1): Promise<string[]> {
+  async getMyFollows(token: string, limit = 10, page = 1): Promise<string[]> {
     this.logger.debug(`Calling getMyFollows with limit=${String(limit)}, page=${String(page)}`);
     const request: GetMyFollowsQuery = { pagination: { limit, page } };
+
+    const outboundMetadata = new Metadata();
+    if (token) {
+      outboundMetadata.set('x-internal-token', token);
+    }
+
     const response: GetMyFollowsResponse = await firstValueFrom(
-      this.queryService.getMyFollows(request, metadata),
+      this.queryService.getMyFollows(request, outboundMetadata),
     );
     return response.ids;
   }
 
-  async getMyFollowers(metadata: Metadata, limit = 10, page = 1): Promise<string[]> {
+  async getMyFollowers(token: string, limit = 10, page = 1): Promise<string[]> {
     this.logger.debug(`Calling getMyFollowers with limit=${String(limit)}, page=${String(page)}`);
     const request: GetMyFollowersQuery = { pagination: { limit, page } };
+
+    const outboundMetadata = new Metadata();
+    if (token) {
+      outboundMetadata.set('x-internal-token', token);
+    }
+
     const response: GetMyFollowersResponse = await firstValueFrom(
-      this.queryService.getMyFollowers(request, metadata),
+      this.queryService.getMyFollowers(request, outboundMetadata),
     );
     return response.ids;
   }

@@ -1,6 +1,6 @@
 import { Controller, UseGuards } from '@nestjs/common';
 import { GrpcMethod, Payload } from '@nestjs/microservices';
-import { GrpcInternalGuard, CurrentUser, GrpcMetadataHelper } from '@volontariapp/auth';
+import { GrpcInternalGuard, CurrentUser } from '@volontariapp/auth';
 import type { AuthUser } from '@volontariapp/auth';
 import { USER_SERVICE_NAME, USER_QUERY_METHODS } from '@volontariapp/contracts-nest';
 import { GetUserQueryDTO } from '../../dto/request/query/get-user.query.dto.js';
@@ -15,6 +15,7 @@ import { AdminUserResponseDTO } from '../../dto/response/admin-user.response.dto
 import { SocialRelationshipQueryClientService } from '../../clients/social-relationship.query-client.js';
 import { GetMyFollowsProfilesQueryDTO } from '../../dto/request/query/get-my-follows-profiles.query.dto.js';
 import { GetMyFollowersProfilesQueryDTO } from '../../dto/request/query/get-my-followers-profiles.query.dto.js';
+import { InternalToken } from '../../decorators/internal-token.decorator.js';
 
 @Controller()
 export class UserQueryController {
@@ -24,7 +25,6 @@ export class UserQueryController {
     private readonly userService: UserService,
     private readonly userTransformer: UserTransformer,
     private readonly socialRelationshipQueryClient: SocialRelationshipQueryClientService,
-    private readonly grpcMetadataHelper: GrpcMetadataHelper,
   ) {}
 
   @UseGuards(GrpcInternalGuard)
@@ -73,13 +73,16 @@ export class UserQueryController {
   async getMyFollowsProfiles(
     @Payload() data: GetMyFollowsProfilesQueryDTO,
     @CurrentUser() user: AuthUser,
+    @InternalToken() token: string,
   ): Promise<ListUsersResponseDTO> {
+    /**
+     * Il faut implementer le cas asynchrone, si on failed alors on renvoie une 206, et on cree un event
+     */
     this.logger.log(`gRPC: Getting follows profiles for user: ${user.id}`);
-    const metadata = await this.grpcMetadataHelper.createInternalMetadata(user);
     const page = data.pagination?.page ?? 1;
     const limit = data.pagination?.limit ?? 10;
 
-    const ids = await this.socialRelationshipQueryClient.getMyFollows(metadata, limit, page);
+    const ids = await this.socialRelationshipQueryClient.getMyFollows(token, limit, page);
 
     const users = await Promise.all(
       ids.map((id) => this.userService.findById(new UserId(id)).catch(() => null)),
@@ -102,13 +105,16 @@ export class UserQueryController {
   async getMyFollowersProfiles(
     @Payload() data: GetMyFollowersProfilesQueryDTO,
     @CurrentUser() user: AuthUser,
+    @InternalToken() token: string,
   ): Promise<ListUsersResponseDTO> {
+    /**
+     * Il faut implementer le cas asynchrone, si on failed alors on renvoie une 206, et on cree un event
+     */
     this.logger.log(`gRPC: Getting followers profiles for user: ${user.id}`);
-    const metadata = await this.grpcMetadataHelper.createInternalMetadata(user);
     const page = data.pagination?.page ?? 1;
     const limit = data.pagination?.limit ?? 10;
 
-    const ids = await this.socialRelationshipQueryClient.getMyFollowers(metadata, limit, page);
+    const ids = await this.socialRelationshipQueryClient.getMyFollowers(token, limit, page);
 
     const users: UserEntity[] = await Promise.all(
       ids.map((id) => this.userService.findById(new UserId(id))),

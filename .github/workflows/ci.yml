@@ -13,7 +13,7 @@ jobs:
     with:
       service-name: ms-user
     secrets: inherit
-  
+
   ci-docker:
     needs: ci
     permissions:

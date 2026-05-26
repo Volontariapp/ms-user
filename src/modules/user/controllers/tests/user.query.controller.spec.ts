@@ -7,6 +7,7 @@ import { AdminGetUserQueryDTO } from '../../dto/request/query/admin-get-user.que
 import { UserFactory } from '../../../../__test-utils__/factories/user.factory';
 import type { AuthUser } from '@volontariapp/auth';
 import { JwtService } from '@volontariapp/auth';
+import { SocialRelationshipQueryClientService } from '../../clients/social-relationship.query-client';
 
 describe('UserQueryController', () => {
   let controller: UserQueryController;
@@ -40,6 +41,7 @@ describe('UserQueryController', () => {
         { provide: UserService, useValue: userService },
         { provide: UserTransformer, useValue: userTransformer },
         { provide: JwtService, useValue: { verifyInternal: jest.fn() } },
+        { provide: SocialRelationshipQueryClientService, useValue: {} },
       ],
     }).compile();
 
