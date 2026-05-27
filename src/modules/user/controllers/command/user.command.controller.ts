@@ -3,7 +3,6 @@ import { GrpcMethod, Payload } from '@nestjs/microservices';
 import { GrpcInternalGuard, CurrentUser } from '@volontariapp/auth';
 import type { AuthUser } from '@volontariapp/auth';
 import { USER_SERVICE_NAME, USER_COMMAND_METHODS } from '@volontariapp/contracts-nest';
-import { Logger } from '@volontariapp/logger';
 import {
   AuthService,
   BadgeId,
@@ -14,6 +13,10 @@ import {
   UserService,
 } from '@volontariapp/domain-user';
 import { UserTransformer } from '../../transformers/user.transformer.js';
+import { UserJobType } from '@volontariapp/messaging';
+import { InjectDataSource } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
+import { BaseCommandController } from './base.command.controller.js';
 import { SignUpCommandDTO } from '../../dto/request/command/sign-up.command.dto.js';
 import { SignUpResponseDTO } from '../../dto/response/sign-up.response.dto.js';
 import { LoginCommandDTO } from '../../dto/request/command/login.command.dto.js';
@@ -31,14 +34,15 @@ import { AdminDeleteUserCommandDTO } from '../../dto/request/command/admin-delet
 import { AdminDeleteUserResponseDTO } from '../../dto/response/admin-delete-user.response.dto.js';
 
 @Controller()
-export class UserCommandController {
-  private readonly logger = new Logger({ context: UserCommandController.name });
-
+export class UserCommandController extends BaseCommandController {
   constructor(
     private readonly userService: UserService,
     private readonly authService: AuthService,
     private readonly userTransformer: UserTransformer,
-  ) {}
+    @InjectDataSource() dataSource: DataSource,
+  ) {
+    super(dataSource);
+  }
 
   @GrpcMethod(USER_SERVICE_NAME, USER_COMMAND_METHODS.SIGN_UP)
   async signUp(@Payload() data: SignUpCommandDTO): Promise<SignUpResponseDTO> {
@@ -64,12 +68,14 @@ export class UserCommandController {
     @Payload() data: UpdateUserCommandDTO,
     @CurrentUser() user: AuthUser,
   ): Promise<UpdateUserResponseDTO> {
-    this.logger.log('gRPC: Updating user with id: ' + user.id);
-    const input = this.userTransformer.toUpdateUserInput(data);
-    const entity = await this.userService.update(new UserId(user.id), input);
-    return {
-      user: this.userTransformer.toUserDTO(entity),
-    };
+    return this.withFallback(UserJobType.FALLBACK_UPDATE_USER, user.id, data, async () => {
+      this.logger.log('gRPC: Updating user with id: ' + user.id);
+      const input = this.userTransformer.toUpdateUserInput(data);
+      const entity = await this.userService.update(new UserId(user.id), input);
+      return {
+        user: this.userTransformer.toUserDTO(entity),
+      };
+    });
   }
 
   @UseGuards(GrpcInternalGuard)
@@ -78,8 +84,10 @@ export class UserCommandController {
     @Payload() _data: DeleteUserCommandDTO,
     @CurrentUser() user: AuthUser,
   ): Promise<void> {
-    this.logger.log('gRPC: Deleting user with id: ' + user.id);
-    await this.userService.delete(new UserId(user.id));
+    return this.withFallback(UserJobType.FALLBACK_DELETE_USER, user.id, _data, async () => {
+      this.logger.log('gRPC: Deleting user with id: ' + user.id);
+      await this.userService.delete(new UserId(user.id));
+    });
   }
 
   @GrpcMethod(USER_SERVICE_NAME, USER_COMMAND_METHODS.REFRESH_TOKEN)
@@ -91,24 +99,50 @@ export class UserCommandController {
 
   @GrpcMethod(USER_SERVICE_NAME, USER_COMMAND_METHODS.ADD_BADGE_TO_USER)
   async addBadge(@Payload() data: AddBadgeToUserCommandDTO): Promise<void> {
-    this.logger.log(`gRPC: Adding badge with id: ${data.badgeId} to user with id: ${data.userId}`);
-    await this.userService.addBadgeToUser(new UserId(data.userId), new BadgeId(data.badgeId));
+    return this.withFallback(
+      UserJobType.FALLBACK_ADD_BADGE_TO_USER,
+      data.userId,
+      data,
+      async () => {
+        this.logger.log(
+          `gRPC: Adding badge with id: ${data.badgeId} to user with id: ${data.userId}`,
+        );
+        await this.userService.addBadgeToUser(new UserId(data.userId), new BadgeId(data.badgeId));
+      },
+    );
   }
 
   @GrpcMethod(USER_SERVICE_NAME, USER_COMMAND_METHODS.REMOVE_BADGE_FROM_USER)
   async removeBadge(@Payload() data: RemoveBadgeFromUserCommandDTO): Promise<void> {
-    this.logger.log(
-      `gRPC: Removing badge with id: ${data.badgeId} from user with id: ${data.userId}`,
+    return this.withFallback(
+      UserJobType.FALLBACK_REMOVE_BADGE_FROM_USER,
+      data.userId,
+      data,
+      async () => {
+        this.logger.log(
+          `gRPC: Removing badge with id: ${data.badgeId} from user with id: ${data.userId}`,
+        );
+        await this.userService.removeBadgeFromUser(
+          new UserId(data.userId),
+          new BadgeId(data.badgeId),
+        );
+      },
     );
-    await this.userService.removeBadgeFromUser(new UserId(data.userId), new BadgeId(data.badgeId));
   }
 
   @GrpcMethod(USER_SERVICE_NAME, USER_COMMAND_METHODS.INCREMENT_IMPACT_SCORE)
   async incrementImpactScore(@Payload() data: IncrementImpactScoreCommandDTO): Promise<void> {
-    this.logger.log(`gRPC: Incrementing impact score for user with id: ${data.userId}`);
-    await this.userService.incrementImpactScore(
-      new UserId(data.userId),
-      new ImpactScore(data.scoreIncrement),
+    return this.withFallback(
+      UserJobType.FALLBACK_INCREMENT_IMPACT_SCORE,
+      data.userId,
+      data,
+      async () => {
+        this.logger.log(`gRPC: Incrementing impact score for user with id: ${data.userId}`);
+        await this.userService.incrementImpactScore(
+          new UserId(data.userId),
+          new ImpactScore(data.scoreIncrement),
+        );
+      },
     );
   }
 

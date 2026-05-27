@@ -10,11 +10,20 @@ import { UserFactory } from '../../../../__test-utils__/factories/user.factory';
 import type { AuthUser } from '@volontariapp/auth';
 import { JwtService } from '@volontariapp/auth';
 
+import { DataSource } from 'typeorm';
+import { getDataSourceToken } from '@nestjs/typeorm';
+import { JobsOutboxModel } from '@volontariapp/database';
+import { JobsOutboxRepository } from '@volontariapp/outbox';
+import { NotFoundError, PartialContentError } from '@volontariapp/errors';
+import { UserJobType } from '@volontariapp/messaging';
+
 describe('UserCommandController', () => {
   let controller: UserCommandController;
   let userService: Partial<UserService>;
   let authService: Partial<AuthService>;
   let userTransformer: Partial<UserTransformer>;
+  let mockJobsOutboxRepo: { save: jest.Mock };
+  let mockDataSource: Partial<DataSource>;
 
   const mockAuthUser: AuthUser = {
     id: '123e4567-e89b-12d3-a456-426614174000',
@@ -47,6 +56,17 @@ describe('UserCommandController', () => {
       toSignUpInput: jest.fn(),
     };
 
+    mockJobsOutboxRepo = {
+      save: jest.fn().mockResolvedValue({ id: 'job-123' }),
+    };
+
+    mockDataSource = {
+      getRepository: jest.fn().mockImplementation((model) => {
+        if (model === JobsOutboxModel) return mockJobsOutboxRepo;
+        return {};
+      }),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UserCommandController],
       providers: [
@@ -54,6 +74,7 @@ describe('UserCommandController', () => {
         { provide: AuthService, useValue: authService },
         { provide: UserTransformer, useValue: userTransformer },
         { provide: JwtService, useValue: { verifyInternal: jest.fn() } },
+        { provide: getDataSourceToken(), useValue: mockDataSource },
       ],
     }).compile();
 
@@ -125,6 +146,55 @@ describe('UserCommandController', () => {
         expect.objectContaining({ value: 'other-user-id' }),
       );
       expect(result).toEqual({});
+    });
+  });
+
+  describe('Fallback mechanism', () => {
+    let createSpy: jest.SpiedFunction<typeof JobsOutboxRepository.prototype.create>;
+
+    beforeEach(() => {
+      createSpy = jest
+        .spyOn(JobsOutboxRepository.prototype, 'create')
+        .mockImplementation(() => Promise.resolve({} as never));
+    });
+
+    afterEach(() => {
+      createSpy.mockRestore();
+    });
+
+    it('should create a fallback job in outbox when an unexpected error occurs during a command', async () => {
+      const mockError = new Error('Unexpected DB failure');
+      const spyGetRepo = jest.spyOn(mockDataSource, 'getRepository');
+      userService.delete = jest.fn().mockRejectedValue(mockError);
+
+      const deleteDto = new DeleteUserCommandDTO();
+
+      await expect(controller.deleteUser(deleteDto, mockAuthUser)).rejects.toThrow(
+        PartialContentError,
+      );
+
+      expect(spyGetRepo).toHaveBeenCalledWith(JobsOutboxModel);
+
+      expect(createSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: UserJobType.FALLBACK_DELETE_USER,
+          emitter: 'ms-user',
+          emitterId: mockAuthUser.id,
+          target: 'fallback-user-queue',
+        }),
+      );
+    });
+
+    it('should NOT create a fallback job for a 404 or 409 Api Error', async () => {
+      const mockApiError = new NotFoundError('Not found');
+
+      userService.delete = jest.fn().mockRejectedValue(mockApiError);
+
+      const deleteDto = new DeleteUserCommandDTO();
+
+      await expect(controller.deleteUser(deleteDto, mockAuthUser)).rejects.toThrow('Not found');
+
+      expect(createSpy).not.toHaveBeenCalled();
     });
   });
 });
