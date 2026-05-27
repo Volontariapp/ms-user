@@ -1,8 +1,12 @@
 import { Controller, UseGuards } from '@nestjs/common';
 import { GrpcMethod, Payload } from '@nestjs/microservices';
-import { GrpcInternalGuard, CurrentUser } from '@volontariapp/auth';
+import { GrpcInternalGuard, CurrentUser, InternalToken } from '@volontariapp/auth';
 import type { AuthUser } from '@volontariapp/auth';
 import { USER_SERVICE_NAME, USER_QUERY_METHODS } from '@volontariapp/contracts-nest';
+import type {
+  GetEventParticipantsProfilesQuery,
+  GetPostLikersProfilesQuery,
+} from '@volontariapp/contracts-nest';
 import { GetUserQueryDTO } from '../../dto/request/query/get-user.query.dto.js';
 import { UserResponseDTO } from '../../dto/response/user.response.dto.js';
 import { Logger } from '@volontariapp/logger';
@@ -15,7 +19,11 @@ import { AdminUserResponseDTO } from '../../dto/response/admin-user.response.dto
 import { SocialRelationshipQueryClientService } from '../../clients/social-relationship.query-client.js';
 import { GetMyFollowsProfilesQueryDTO } from '../../dto/request/query/get-my-follows-profiles.query.dto.js';
 import { GetMyFollowersProfilesQueryDTO } from '../../dto/request/query/get-my-followers-profiles.query.dto.js';
-import { InternalToken } from '../../decorators/internal-token.decorator.js';
+import { GetUsersByIdsQueryDTO } from '../../dto/request/query/get-users-by-ids.query.dto.js';
+import { GetUsersByIdsResponseDTO } from '../../dto/response/get-users-by-ids.response.dto.js';
+
+import { SocialParticipationQueryClientService } from '../../clients/social-participation.query-client.js';
+import { SocialInteractionQueryClientService } from '../../clients/social-interaction.query-client.js';
 
 @Controller()
 export class UserQueryController {
@@ -25,6 +33,8 @@ export class UserQueryController {
     private readonly userService: UserService,
     private readonly userTransformer: UserTransformer,
     private readonly socialRelationshipQueryClient: SocialRelationshipQueryClientService,
+    private readonly socialParticipationClient: SocialParticipationQueryClientService,
+    private readonly socialInteractionClient: SocialInteractionQueryClientService,
   ) {}
 
   @UseGuards(GrpcInternalGuard)
@@ -36,6 +46,26 @@ export class UserQueryController {
     this.logger.log('gRPC: Getting user with id: ' + user.id);
     const userEntity = await this.userService.findById(new UserId(user.id));
     return { user: this.userTransformer.toUserDTO(userEntity) };
+  }
+
+  @UseGuards(GrpcInternalGuard)
+  @GrpcMethod(USER_SERVICE_NAME, 'GetUsersByIds')
+  async getUsersByIds(@Payload() data: GetUsersByIdsQueryDTO): Promise<GetUsersByIdsResponseDTO> {
+    this.logger.log(`gRPC: Getting users by ids: ${String(data.ids.length)}`);
+    const users = await Promise.all(
+      data.ids.map((id) => this.userService.findById(new UserId(id)).catch(() => null)),
+    );
+    const validUsers = users.filter((u): u is UserEntity => u !== null);
+
+    return {
+      users: validUsers.map((u) => this.userTransformer.toUserDTO(u)),
+      pagination: {
+        total: validUsers.length,
+        page: 1,
+        limit: validUsers.length,
+        totalPages: 1,
+      },
+    };
   }
 
   @GrpcMethod(USER_SERVICE_NAME, USER_QUERY_METHODS.LIST_USERS)
@@ -116,12 +146,70 @@ export class UserQueryController {
 
     const ids = await this.socialRelationshipQueryClient.getMyFollowers(token, limit, page);
 
-    const users: UserEntity[] = await Promise.all(
-      ids.map((id) => this.userService.findById(new UserId(id))),
+    const users = await Promise.all(
+      ids.map((id) => this.userService.findById(new UserId(id)).catch(() => null)),
     );
+    const validUsers = users.filter((u): u is UserEntity => u !== null);
 
     return {
-      users: users.map((u) => this.userTransformer.toUserDTO(u)),
+      users: validUsers.map((u) => this.userTransformer.toUserDTO(u)),
+      pagination: {
+        total: 0,
+        page,
+        limit,
+        totalPages: 1,
+      },
+    };
+  }
+
+  @GrpcMethod(USER_SERVICE_NAME, 'GetEventParticipantsProfiles')
+  async getEventParticipantsProfiles(
+    @Payload() data: GetEventParticipantsProfilesQuery,
+  ): Promise<ListUsersResponseDTO> {
+    this.logger.log(`gRPC: Getting event participants profiles for event: ${data.eventId}`);
+    const page = data.pagination?.page ?? 1;
+    const limit = data.pagination?.limit ?? 10;
+
+    const ids = await this.socialParticipationClient.getEventParticipants(
+      '',
+      data.eventId,
+      limit,
+      page,
+    );
+
+    const users = await Promise.all(
+      ids.map((id) => this.userService.findById(new UserId(id)).catch(() => null)),
+    );
+    const validUsers = users.filter((u): u is UserEntity => u !== null);
+
+    return {
+      users: validUsers.map((u) => this.userTransformer.toUserDTO(u)),
+      pagination: {
+        total: 0,
+        page,
+        limit,
+        totalPages: 1,
+      },
+    };
+  }
+
+  @GrpcMethod(USER_SERVICE_NAME, 'GetPostLikersProfiles')
+  async getPostLikersProfiles(
+    @Payload() data: GetPostLikersProfilesQuery,
+  ): Promise<ListUsersResponseDTO> {
+    this.logger.log(`gRPC: Getting post likers profiles for post: ${data.postId}`);
+    const page = data.pagination?.page ?? 1;
+    const limit = data.pagination?.limit ?? 10;
+
+    const ids = await this.socialInteractionClient.getPostLikers('', data.postId, limit, page);
+
+    const users = await Promise.all(
+      ids.map((id) => this.userService.findById(new UserId(id)).catch(() => null)),
+    );
+    const validUsers = users.filter((u): u is UserEntity => u !== null);
+
+    return {
+      users: validUsers.map((u) => this.userTransformer.toUserDTO(u)),
       pagination: {
         total: 0,
         page,

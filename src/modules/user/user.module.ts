@@ -9,6 +9,8 @@ import { UserTransformer } from './transformers/user.transformer.js';
 import { BadgeTransformer } from './transformers/badge.transformer.js';
 import { AppConfigService } from '../../config/app-config.service.js';
 import { SocialRelationshipQueryClientService } from './clients/social-relationship.query-client.js';
+import { SocialParticipationQueryClientService } from './clients/social-participation.query-client.js';
+import { SocialInteractionQueryClientService } from './clients/social-interaction.query-client.js';
 
 @Module({
   imports: [
@@ -27,6 +29,12 @@ import { SocialRelationshipQueryClientService } from './clients/social-relations
     BadgeCommandController,
     BadgeQueryController,
   ],
-  providers: [UserTransformer, BadgeTransformer, SocialRelationshipQueryClientService],
+  providers: [
+    UserTransformer,
+    BadgeTransformer,
+    SocialRelationshipQueryClientService,
+    SocialParticipationQueryClientService,
+    SocialInteractionQueryClientService,
+  ],
 })
 export class UserModule {}
