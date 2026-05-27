@@ -162,16 +162,21 @@ export class UserQueryController {
     };
   }
 
+  @UseGuards(GrpcInternalGuard)
   @GrpcMethod(USER_SERVICE_NAME, 'GetEventParticipantsProfiles')
   async getEventParticipantsProfiles(
     @Payload() data: GetEventParticipantsProfilesQuery,
+    @CurrentUser() user: AuthUser,
+    @InternalToken() token: string,
   ): Promise<ListUsersResponseDTO> {
-    this.logger.log(`gRPC: Getting event participants profiles for event: ${data.eventId}`);
+    this.logger.log(
+      `gRPC: Getting event participants profiles for event: ${data.eventId} by user ${user.id}`,
+    );
     const page = data.pagination?.page ?? 1;
     const limit = data.pagination?.limit ?? 10;
 
     const ids = await this.socialParticipationClient.getEventParticipants(
-      '',
+      token,
       data.eventId,
       limit,
       page,
@@ -193,15 +198,20 @@ export class UserQueryController {
     };
   }
 
+  @UseGuards(GrpcInternalGuard)
   @GrpcMethod(USER_SERVICE_NAME, 'GetPostLikersProfiles')
   async getPostLikersProfiles(
     @Payload() data: GetPostLikersProfilesQuery,
+    @CurrentUser() user: AuthUser,
+    @InternalToken() token: string,
   ): Promise<ListUsersResponseDTO> {
-    this.logger.log(`gRPC: Getting post likers profiles for post: ${data.postId}`);
+    this.logger.log(
+      `gRPC: Getting post likers profiles for post: ${data.postId} by user ${user.id}`,
+    );
     const page = data.pagination?.page ?? 1;
     const limit = data.pagination?.limit ?? 10;
 
-    const ids = await this.socialInteractionClient.getPostLikers('', data.postId, limit, page);
+    const ids = await this.socialInteractionClient.getPostLikers(token, data.postId, limit, page);
 
     const users = await Promise.all(
       ids.map((id) => this.userService.findById(new UserId(id)).catch(() => null)),

@@ -8,6 +8,8 @@ import { UserFactory } from '../../../../__test-utils__/factories/user.factory';
 import type { AuthUser } from '@volontariapp/auth';
 import { JwtService } from '@volontariapp/auth';
 import { SocialRelationshipQueryClientService } from '../../clients/social-relationship.query-client';
+import { SocialParticipationQueryClientService } from '../../clients/social-participation.query-client';
+import { SocialInteractionQueryClientService } from '../../clients/social-interaction.query-client';
 
 describe('UserQueryController', () => {
   let controller: UserQueryController;
@@ -42,6 +44,8 @@ describe('UserQueryController', () => {
         { provide: UserTransformer, useValue: userTransformer },
         { provide: JwtService, useValue: { verifyInternal: jest.fn() } },
         { provide: SocialRelationshipQueryClientService, useValue: {} },
+        { provide: SocialParticipationQueryClientService, useValue: {} },
+        { provide: SocialInteractionQueryClientService, useValue: {} },
       ],
     }).compile();
 
