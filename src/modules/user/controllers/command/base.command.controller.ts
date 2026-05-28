@@ -21,7 +21,10 @@ export abstract class BaseCommandController {
     try {
       return await operation();
     } catch (error: unknown) {
-      if (isBaseApiError(error) && (error.statusCode === 404 || error.statusCode === 409)) {
+      if (
+        isBaseApiError(error) &&
+        (error.statusCode === 404 || error.statusCode === 409 || error.statusCode === 400)
+      ) {
         this.logger.warn(
           `Operation failed with client error (${String(error.statusCode)}). No fallback job created for ${String(jobType)}.`,
         );
