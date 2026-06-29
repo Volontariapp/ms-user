@@ -91,7 +91,7 @@ export class UserQueryController {
       },
     };
   }
-
+  @UseGuards(GrpcInternalGuard)
   @GrpcMethod(USER_SERVICE_NAME, 'AdminGetUser')
   async adminGetUser(@Payload() data: AdminGetUserQueryDTO): Promise<AdminUserResponseDTO> {
     this.logger.log(`gRPC: Admin getting user with id: ${data.userId}`);
@@ -99,9 +99,10 @@ export class UserQueryController {
     return { user: this.userTransformer.toUserDTO(user) };
   }
 
+  @UseGuards(GrpcInternalGuard)
   @GrpcMethod(USER_SERVICE_NAME, 'GetPublicUser')
   async getPublicUser(@Payload() data: AdminGetUserQueryDTO): Promise<PublicUserResponseDto> {
-    this.logger.log(`gRPC: Admin getting user with id: ${data.userId}`);
+    this.logger.log(`gRPC: Getting public user profile with id: ${data.userId}`);
     const user = await this.userService.findById(new UserId(data.userId));
     return { userPublic: this.userTransformer.toPublicUserDTO(user) };
   }
