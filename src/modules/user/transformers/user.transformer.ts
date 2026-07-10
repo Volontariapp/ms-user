@@ -5,6 +5,7 @@ import { UserDTO } from '../dto/common/user.dto.js';
 import { SignUpCommandDTO } from '../dto/request/command/sign-up.command.dto.js';
 import { UserRoles } from '@volontariapp/shared';
 import { UpdateUserCommandDTO } from '../dto/request/command/update-user.command.dto.js';
+import { PublicUserDTO } from '../dto/common/public.user.dto.js';
 
 @Injectable()
 export class UserTransformer {
@@ -51,6 +52,22 @@ export class UserTransformer {
     userDTO.badges = userEntity.badges.map((badge) => this.badgeTransformer.toBadgeDTO(badge));
 
     return userDTO;
+  }
+
+  toPublicUserDTO(userEntity: UserEntity): PublicUserDTO {
+    const publicUserDTO = new PublicUserDTO();
+    publicUserDTO.id = userEntity.id;
+    publicUserDTO.pseudo = userEntity.pseudo;
+    publicUserDTO.role = userEntity.role;
+    if (userEntity.bio !== undefined) publicUserDTO.bio = userEntity.bio;
+    if (userEntity.logoPath !== undefined) publicUserDTO.logoPath = userEntity.logoPath;
+    publicUserDTO.totalImpactScore = userEntity.totalImpactScore;
+    if (userEntity.rna !== undefined) publicUserDTO.organisationInfo = { rna: userEntity.rna };
+    publicUserDTO.badges = userEntity.badges.map((badge) =>
+      this.badgeTransformer.toBadgeDTO(badge),
+    );
+
+    return publicUserDTO;
   }
 
   toSignUpInput(command: SignUpCommandDTO): SignUpInput {

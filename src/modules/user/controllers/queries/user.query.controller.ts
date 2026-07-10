@@ -24,6 +24,7 @@ import { GetUsersByIdsResponseDTO } from '../../dto/response/get-users-by-ids.re
 
 import { SocialParticipationQueryClientService } from '../../clients/social-participation.query-client.js';
 import { SocialInteractionQueryClientService } from '../../clients/social-interaction.query-client.js';
+import { PublicUserResponseDto } from '../../dto/response/public.user.response.dto.js';
 
 @Controller()
 export class UserQueryController {
@@ -90,12 +91,20 @@ export class UserQueryController {
       },
     };
   }
-
+  @UseGuards(GrpcInternalGuard)
   @GrpcMethod(USER_SERVICE_NAME, 'AdminGetUser')
   async adminGetUser(@Payload() data: AdminGetUserQueryDTO): Promise<AdminUserResponseDTO> {
     this.logger.log(`gRPC: Admin getting user with id: ${data.userId}`);
     const user = await this.userService.findById(new UserId(data.userId));
     return { user: this.userTransformer.toUserDTO(user) };
+  }
+
+  @UseGuards(GrpcInternalGuard)
+  @GrpcMethod(USER_SERVICE_NAME, 'GetPublicUser')
+  async getPublicUser(@Payload() data: AdminGetUserQueryDTO): Promise<PublicUserResponseDto> {
+    this.logger.log(`gRPC: Getting public user profile with id: ${data.userId}`);
+    const user = await this.userService.findById(new UserId(data.userId));
+    return { userPublic: this.userTransformer.toPublicUserDTO(user) };
   }
 
   @UseGuards(GrpcInternalGuard)
