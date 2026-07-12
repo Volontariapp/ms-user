@@ -33,7 +33,12 @@ export class SocialInteractionQueryClientService implements OnModuleInit {
     this.logger.log('SocialInteractionQueryClientService initialized');
   }
 
-  async getPostLikers(token: string, postId: string, limit = 10, page = 1): Promise<string[]> {
+  async getPostLikers(
+    token: string,
+    postId: string,
+    limit = 10,
+    page = 1,
+  ): Promise<{ ids: string[]; totalCount: number }> {
     this.logger.debug(
       `Calling getPostLikers for post ${postId} with limit=${String(limit)}, page=${String(page)}`,
     );
@@ -47,6 +52,9 @@ export class SocialInteractionQueryClientService implements OnModuleInit {
     const response: GetPostLikersResponse = await firstValueFrom(
       this.queryService.getPostLikers(request, outboundMetadata),
     );
-    return response.ids;
+    return {
+      ids: response.ids,
+      totalCount: response.pagination?.total ?? 0,
+    };
   }
 }

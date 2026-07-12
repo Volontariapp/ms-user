@@ -36,7 +36,11 @@ export class SocialRelationshipQueryClientService implements OnModuleInit {
     this.logger.log('SocialRelationshipQueryClientService initialized');
   }
 
-  async getMyFollows(token: string, limit = 10, page = 1): Promise<string[]> {
+  async getMyFollows(
+    token: string,
+    limit = 10,
+    page = 1,
+  ): Promise<{ ids: string[]; totalCount: number }> {
     this.logger.debug(`Calling getMyFollows with limit=${String(limit)}, page=${String(page)}`);
     const request: GetMyFollowsQuery = { pagination: { limit, page } };
 
@@ -48,10 +52,17 @@ export class SocialRelationshipQueryClientService implements OnModuleInit {
     const response: GetMyFollowsResponse = await firstValueFrom(
       this.queryService.getMyFollows(request, outboundMetadata),
     );
-    return response.ids;
+    return {
+      ids: response.ids,
+      totalCount: response.pagination?.total ?? 0,
+    };
   }
 
-  async getMyFollowers(token: string, limit = 10, page = 1): Promise<string[]> {
+  async getMyFollowers(
+    token: string,
+    limit = 10,
+    page = 1,
+  ): Promise<{ ids: string[]; totalCount: number }> {
     this.logger.debug(`Calling getMyFollowers with limit=${String(limit)}, page=${String(page)}`);
     const request: GetMyFollowersQuery = { pagination: { limit, page } };
 
@@ -63,6 +74,9 @@ export class SocialRelationshipQueryClientService implements OnModuleInit {
     const response: GetMyFollowersResponse = await firstValueFrom(
       this.queryService.getMyFollowers(request, outboundMetadata),
     );
-    return response.ids;
+    return {
+      ids: response.ids,
+      totalCount: response.pagination?.total ?? 0,
+    };
   }
 }

@@ -121,7 +121,11 @@ export class UserQueryController {
     const page = data.pagination?.page ?? 1;
     const limit = data.pagination?.limit ?? 10;
 
-    const ids = await this.socialRelationshipQueryClient.getMyFollows(token, limit, page);
+    const { ids, totalCount } = await this.socialRelationshipQueryClient.getMyFollows(
+      token,
+      limit,
+      page,
+    );
 
     const users = await Promise.all(
       ids.map((id) => this.userService.findById(new UserId(id)).catch(() => null)),
@@ -131,10 +135,10 @@ export class UserQueryController {
     return {
       users: validUsers.map((u) => this.userTransformer.toUserDTO(u)),
       pagination: {
-        total: 0,
+        total: totalCount,
         page,
         limit,
-        totalPages: 1,
+        totalPages: Math.ceil(totalCount / limit) || 1,
       },
     };
   }
@@ -146,14 +150,15 @@ export class UserQueryController {
     @CurrentUser() user: AuthUser,
     @InternalToken() token: string,
   ): Promise<ListUsersResponseDTO> {
-    /**
-     * Il faut implementer le cas asynchrone, si on failed alors on renvoie une 206, et on cree un event
-     */
     this.logger.log(`gRPC: Getting followers profiles for user: ${user.id}`);
     const page = data.pagination?.page ?? 1;
     const limit = data.pagination?.limit ?? 10;
 
-    const ids = await this.socialRelationshipQueryClient.getMyFollowers(token, limit, page);
+    const { ids, totalCount } = await this.socialRelationshipQueryClient.getMyFollowers(
+      token,
+      limit,
+      page,
+    );
 
     const users = await Promise.all(
       ids.map((id) => this.userService.findById(new UserId(id)).catch(() => null)),
@@ -163,10 +168,10 @@ export class UserQueryController {
     return {
       users: validUsers.map((u) => this.userTransformer.toUserDTO(u)),
       pagination: {
-        total: 0,
+        total: totalCount,
         page,
         limit,
-        totalPages: 1,
+        totalPages: Math.ceil(totalCount / limit) || 1,
       },
     };
   }
@@ -184,7 +189,7 @@ export class UserQueryController {
     const page = data.pagination?.page ?? 1;
     const limit = data.pagination?.limit ?? 10;
 
-    const ids = await this.socialParticipationClient.getEventParticipants(
+    const { ids, totalCount } = await this.socialParticipationClient.getEventParticipants(
       token,
       data.eventId,
       limit,
@@ -199,10 +204,10 @@ export class UserQueryController {
     return {
       users: validUsers.map((u) => this.userTransformer.toUserDTO(u)),
       pagination: {
-        total: 0,
+        total: totalCount,
         page,
         limit,
-        totalPages: 1,
+        totalPages: Math.ceil(totalCount / limit) || 1,
       },
     };
   }
@@ -220,7 +225,12 @@ export class UserQueryController {
     const page = data.pagination?.page ?? 1;
     const limit = data.pagination?.limit ?? 10;
 
-    const ids = await this.socialInteractionClient.getPostLikers(token, data.postId, limit, page);
+    const { ids, totalCount } = await this.socialInteractionClient.getPostLikers(
+      token,
+      data.postId,
+      limit,
+      page,
+    );
 
     const users = await Promise.all(
       ids.map((id) => this.userService.findById(new UserId(id)).catch(() => null)),
@@ -230,10 +240,10 @@ export class UserQueryController {
     return {
       users: validUsers.map((u) => this.userTransformer.toUserDTO(u)),
       pagination: {
-        total: 0,
+        total: totalCount,
         page,
         limit,
-        totalPages: 1,
+        totalPages: Math.ceil(totalCount / limit) || 1,
       },
     };
   }

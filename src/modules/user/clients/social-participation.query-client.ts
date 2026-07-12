@@ -38,7 +38,7 @@ export class SocialParticipationQueryClientService implements OnModuleInit {
     eventId: string,
     limit = 10,
     page = 1,
-  ): Promise<string[]> {
+  ): Promise<{ ids: string[]; totalCount: number }> {
     this.logger.debug(
       `Calling getEventParticipants for event ${eventId} with limit=${String(limit)}, page=${String(page)}`,
     );
@@ -52,6 +52,9 @@ export class SocialParticipationQueryClientService implements OnModuleInit {
     const response: GetEventParticipantsResponse = await firstValueFrom(
       this.queryService.getEventParticipants(request, outboundMetadata),
     );
-    return response.ids;
+    return {
+      ids: response.ids,
+      totalCount: response.pagination?.total ?? 0,
+    };
   }
 }
