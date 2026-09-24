@@ -1,0 +1,9 @@
+schema-version: v2.2
+dd-service: ms-user
+team: volontariapp
+application: volontariapp
+description: Microservice gRPC de gestion des utilisateurs, profils et authentification.
+tier: backend
+type: web
+repos:
+  - url: https://github.com/Volontariapp/ms-user
