@@ -35,11 +35,12 @@ export const grpcClientOptions: ClientsModuleAsyncOptions = [
       transport: Transport.GRPC,
       options: {
         package: 'volontariapp.storage',
-        url: configService.msStorageUrl ?? 'localhost:5006',
+        url: configService.msStorageUrl,
         protoPath: [],
       },
     }),
   },
 ];
+
 
 

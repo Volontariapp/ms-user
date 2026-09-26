@@ -18,7 +18,10 @@ import { NotFoundError, PartialContentError } from '@volontariapp/errors';
 import { UserJobType } from '@volontariapp/messaging';
 
 import { StorageClientService } from '../../clients/storage.client';
-import { createMockStorageClientService } from '../../clients/storage.client.mock';
+
+const createMockStorageClientService = (): jest.Mocked<Partial<StorageClientService>> => ({
+  verifyFilesExist: jest.fn().mockResolvedValue(undefined),
+});
 
 describe('UserCommandController', () => {
   let controller: UserCommandController;
@@ -28,6 +31,7 @@ describe('UserCommandController', () => {
   let storageClientService: ReturnType<typeof createMockStorageClientService>;
   let mockJobsOutboxRepo: { save: jest.Mock };
   let mockDataSource: Partial<DataSource>;
+
 
   const mockAuthUser: AuthUser = {
     id: '123e4567-e89b-12d3-a456-426614174000',

@@ -1,5 +1,6 @@
 import { Type } from 'class-transformer';
-import { IsDefined, IsOptional, IsString, ValidateNested } from 'class-validator';
+import { IsDefined, IsString, ValidateNested } from 'class-validator';
+
 
 import {
   BackendConfig,
@@ -9,10 +10,10 @@ import {
 } from '@volontariapp/config';
 
 export class ExtendedMSURLsConfig extends MSURLsConfig {
-  @IsOptional()
   @IsString()
-  msStorageUrl?: string;
+  msStorageUrl!: string;
 }
+
 
 export class CustomConfig extends BackendConfig {
   @IsDefined()
