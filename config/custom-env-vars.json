@@ -26,7 +26,8 @@
     "msPostUrl": "MS_POST_URL",
     "msEventUrl": "MS_EVENT_URL",
     "msSocialUrl": "MS_SOCIAL_URL",
-    "msWsUrl": "MS_WS_URL"
+    "msWsUrl": "MS_WS_URL",
+    "msStorageUrl": "MS_STORAGE_URL"
   },
   "emailEncryptionSecret": "EMAIL_ENCRYPTION_SECRET"
 }

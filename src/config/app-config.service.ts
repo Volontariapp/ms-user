@@ -30,4 +30,9 @@ export class AppConfigService {
   get emailEncryptionSecret() {
     return this.config.emailEncryptionSecret;
   }
+
+  get msStorageUrl() {
+    return this.config.microServices.msStorageUrl;
+  }
 }
+
