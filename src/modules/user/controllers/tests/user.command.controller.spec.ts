@@ -17,13 +17,21 @@ import { JobsOutboxRepository } from '@volontariapp/outbox';
 import { NotFoundError, PartialContentError } from '@volontariapp/errors';
 import { UserJobType } from '@volontariapp/messaging';
 
+import { StorageClientService } from '../../clients/storage.client';
+
+const createMockStorageClientService = (): jest.Mocked<Partial<StorageClientService>> => ({
+  verifyFilesExist: jest.fn().mockResolvedValue(undefined),
+});
+
 describe('UserCommandController', () => {
   let controller: UserCommandController;
   let userService: Partial<UserService>;
   let authService: Partial<AuthService>;
   let userTransformer: Partial<UserTransformer>;
+  let storageClientService: ReturnType<typeof createMockStorageClientService>;
   let mockJobsOutboxRepo: { save: jest.Mock };
   let mockDataSource: Partial<DataSource>;
+
 
   const mockAuthUser: AuthUser = {
     id: '123e4567-e89b-12d3-a456-426614174000',
@@ -36,6 +44,7 @@ describe('UserCommandController', () => {
   };
 
   beforeEach(async () => {
+    storageClientService = createMockStorageClientService();
     userService = {
       update: jest.fn().mockResolvedValue(UserFactory.create()),
       delete: jest.fn().mockResolvedValue(undefined),
@@ -73,6 +82,7 @@ describe('UserCommandController', () => {
         { provide: UserService, useValue: userService },
         { provide: AuthService, useValue: authService },
         { provide: UserTransformer, useValue: userTransformer },
+        { provide: StorageClientService, useValue: storageClientService },
         { provide: JwtService, useValue: { verifyInternal: jest.fn() } },
         { provide: getDataSourceToken(), useValue: mockDataSource },
       ],
@@ -80,6 +90,7 @@ describe('UserCommandController', () => {
 
     controller = module.get<UserCommandController>(UserCommandController);
   });
+
 
   describe('updateUser with authentication', () => {
     it('should update user profile with JWT token', async () => {
@@ -105,7 +116,19 @@ describe('UserCommandController', () => {
         expect.anything(),
       );
     });
+
+    it('should verify avatarFileId via storageClientService when provided', async () => {
+      const updateDto = new UpdateUserCommandDTO();
+      updateDto.avatarFileId = '123e4567-e89b-12d3-a456-426614174000';
+
+      await controller.updateUser(updateDto, mockAuthUser);
+
+      expect(storageClientService.verifyFilesExist).toHaveBeenCalledWith([
+        '123e4567-e89b-12d3-a456-426614174000',
+      ]);
+    });
   });
+
 
   describe('deleteUser with authentication', () => {
     it('should delete user with JWT token', async () => {

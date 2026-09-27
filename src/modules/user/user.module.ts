@@ -11,6 +11,7 @@ import { AppConfigService } from '../../config/app-config.service.js';
 import { SocialRelationshipQueryClientService } from './clients/social-relationship.query-client.js';
 import { SocialParticipationQueryClientService } from './clients/social-participation.query-client.js';
 import { SocialInteractionQueryClientService } from './clients/social-interaction.query-client.js';
+import { StorageClientService } from './clients/storage.client.js';
 
 @Module({
   imports: [
@@ -35,6 +36,9 @@ import { SocialInteractionQueryClientService } from './clients/social-interactio
     SocialRelationshipQueryClientService,
     SocialParticipationQueryClientService,
     SocialInteractionQueryClientService,
+    StorageClientService,
   ],
+  exports: [StorageClientService],
 })
 export class UserModule {}
+

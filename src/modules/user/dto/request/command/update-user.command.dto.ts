@@ -1,5 +1,5 @@
 import type { UpdateUserCommand } from '@volontariapp/contracts-nest';
-import { IsEmail, IsOptional, IsPhoneNumber, IsString, ValidateNested } from 'class-validator';
+import { IsEmail, IsOptional, IsPhoneNumber, IsString, IsUUID, ValidateNested } from 'class-validator';
 import { OrganisationInfoDTO } from '../../common/organisation-info.dto.js';
 import { Type } from 'class-transformer';
 
@@ -32,8 +32,13 @@ export class UpdateUserCommandDTO implements UpdateUserCommand {
   @IsOptional()
   logoPath?: string | undefined;
 
+  @IsUUID('4')
+  @IsOptional()
+  avatarFileId?: string | undefined;
+
   @ValidateNested()
   @IsOptional()
   @Type(() => OrganisationInfoDTO)
   organisationInfo?: OrganisationInfoDTO | undefined;
 }
+

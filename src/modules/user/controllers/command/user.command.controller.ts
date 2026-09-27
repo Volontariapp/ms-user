@@ -33,12 +33,15 @@ import { AdminUpdateUserResponseDTO } from '../../dto/response/admin-update-user
 import { AdminDeleteUserCommandDTO } from '../../dto/request/command/admin-delete-user.command.dto.js';
 import { AdminDeleteUserResponseDTO } from '../../dto/response/admin-delete-user.response.dto.js';
 
+import { StorageClientService } from '../../clients/storage.client.js';
+
 @Controller()
 export class UserCommandController extends BaseCommandController {
   constructor(
     private readonly userService: UserService,
     private readonly authService: AuthService,
     private readonly userTransformer: UserTransformer,
+    private readonly storageClientService: StorageClientService,
     @InjectDataSource() dataSource: DataSource,
   ) {
     super(dataSource);
@@ -68,6 +71,9 @@ export class UserCommandController extends BaseCommandController {
     @Payload() data: UpdateUserCommandDTO,
     @CurrentUser() user: AuthUser,
   ): Promise<UpdateUserResponseDTO> {
+    if (data.avatarFileId) {
+      await this.storageClientService.verifyFilesExist([data.avatarFileId]);
+    }
     return this.withFallback(UserJobType.FALLBACK_UPDATE_USER, user.id, data, async () => {
       this.logger.log('gRPC: Updating user with id: ' + user.id);
       const input = this.userTransformer.toUpdateUserInput(data);
@@ -77,6 +83,7 @@ export class UserCommandController extends BaseCommandController {
       };
     });
   }
+
 
   @UseGuards(GrpcInternalGuard)
   @GrpcMethod(USER_SERVICE_NAME, USER_COMMAND_METHODS.DELETE_USER)
