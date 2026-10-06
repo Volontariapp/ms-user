@@ -4451,9 +4451,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@volontariapp/contracts-nest@npm:3.3.0":
-  version: 3.3.0
-  resolution: "@volontariapp/contracts-nest@npm:3.3.0"
+"@volontariapp/contracts-nest@npm:3.3.1":
+  version: 3.3.1
+  resolution: "@volontariapp/contracts-nest@npm:3.3.1"
   dependencies:
     "@volontariapp/logger": "npm:0.2.7"
     protobufjs: "npm:^7.5.8"
@@ -4462,17 +4462,27 @@ __metadata:
     "@nestjs/core": ^11.0.0
     "@nestjs/microservices": ^11.0.0
     rxjs: ^7.0.0
-  checksum: 10c0/c31c96ba3d20a1991cba316ecab7c8419838508cb017df540fdcd2085580d84bff07bafe7f7ebd0b081938ac69c57d0495f7b71fb7a050f3a86e3117789f0559
+  checksum: 10c0/4bc85da8806189342fbd3eef29f55ca720938df1fc1128f3018e6dd73b48b954ed6bb0558b4277a49b387909cc63e2a6f4fbe3acdc0f2513737a46523dee4a95
   languageName: node
   linkType: hard
 
-"@volontariapp/contracts@npm:4.3.0, @volontariapp/contracts@npm:^4.3.0":
+"@volontariapp/contracts@npm:4.3.0":
   version: 4.3.0
   resolution: "@volontariapp/contracts@npm:4.3.0"
   dependencies:
     "@volontariapp/logger": "npm:0.2.5"
     protobufjs: "npm:^7.5.8"
   checksum: 10c0/eaccb4a4b93970d21ee0ba058b8e26d03b0f6d063230b5cf4c642c1ee3b1fb40a35da58ea3692ac6ac37038daf104a379c176f04200185c89e79d139bc1fa735
+  languageName: node
+  linkType: hard
+
+"@volontariapp/contracts@npm:4.3.9":
+  version: 4.3.9
+  resolution: "@volontariapp/contracts@npm:4.3.9"
+  dependencies:
+    "@volontariapp/logger": "npm:0.2.7"
+    protobufjs: "npm:^7.5.8"
+  checksum: 10c0/524f2f62fb2d04f0a198dcd8ec0ba7016ce47aa3824dd7629f48b653810b373e7dcf7a5fa72b2aa0cd94cd81fd27b27d9eba1b8f769bffe49b001e66f4189cdc
   languageName: node
   linkType: hard
 
@@ -9557,8 +9567,8 @@ __metadata:
     "@volontariapp/auth": "npm:^3.3.7"
     "@volontariapp/bridge-nest": "npm:^0.3.15"
     "@volontariapp/config": "npm:^3.2.0"
-    "@volontariapp/contracts": "npm:^4.3.0"
-    "@volontariapp/contracts-nest": "npm:3.3.0"
+    "@volontariapp/contracts": "npm:4.3.9"
+    "@volontariapp/contracts-nest": "npm:3.3.1"
     "@volontariapp/database": "npm:^3.3.18"
     "@volontariapp/domain-user": "npm:^2.8.19"
     "@volontariapp/errors": "npm:^0.6.0"
