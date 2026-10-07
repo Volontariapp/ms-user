@@ -1,7 +1,6 @@
 import { Type } from 'class-transformer';
 import { IsDefined, IsString, ValidateNested } from 'class-validator';
 
-
 import {
   BackendConfig,
   AuthGeneratorConfig,
@@ -14,7 +13,6 @@ export class ExtendedMSURLsConfig extends MSURLsConfig {
   msStorageUrl!: string;
 }
 
-
 export class CustomConfig extends BackendConfig {
   @IsDefined()
   @Type(() => Number)
@@ -24,7 +22,6 @@ export class CustomConfig extends BackendConfig {
   @ValidateNested()
   @Type(() => ExtendedMSURLsConfig)
   declare microServices: ExtendedMSURLsConfig;
-
 
   @IsDefined()
   @ValidateNested()

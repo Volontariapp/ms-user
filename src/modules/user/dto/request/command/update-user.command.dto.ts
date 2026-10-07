@@ -1,5 +1,12 @@
 import type { UpdateUserCommand } from '@volontariapp/contracts-nest';
-import { IsEmail, IsOptional, IsPhoneNumber, IsString, IsUUID, ValidateNested } from 'class-validator';
+import {
+  IsEmail,
+  IsOptional,
+  IsPhoneNumber,
+  IsString,
+  IsUUID,
+  ValidateNested,
+} from 'class-validator';
 import { OrganisationInfoDTO } from '../../common/organisation-info.dto.js';
 import { Type } from 'class-transformer';
 
@@ -41,4 +48,3 @@ export class UpdateUserCommandDTO implements UpdateUserCommand {
   @Type(() => OrganisationInfoDTO)
   organisationInfo?: OrganisationInfoDTO | undefined;
 }
-

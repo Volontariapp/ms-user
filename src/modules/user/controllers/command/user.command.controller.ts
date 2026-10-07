@@ -84,7 +84,6 @@ export class UserCommandController extends BaseCommandController {
     });
   }
 
-
   @UseGuards(GrpcInternalGuard)
   @GrpcMethod(USER_SERVICE_NAME, USER_COMMAND_METHODS.DELETE_USER)
   async deleteUser(
