@@ -1,5 +1,5 @@
 import type { CreateBadgeCommand } from '@volontariapp/contracts-nest';
-import { IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class CreateBadgeCommandDTO implements CreateBadgeCommand {
   @IsString()
@@ -14,4 +14,12 @@ export class CreateBadgeCommandDTO implements CreateBadgeCommand {
 
   @IsString()
   description!: string;
+
+  @IsUUID()
+  @IsOptional()
+  iconFileId?: string | undefined;
+
+  @IsString()
+  @IsNotEmpty()
+  idempotencyKey!: string;
 }
