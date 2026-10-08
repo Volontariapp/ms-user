@@ -6,7 +6,13 @@ import { CustomConfig } from './base-config.js';
 
 import { loadConfig } from '@volontariapp/config';
 import { EventQueueModel, JobsOutboxModel, JobAuditModel } from '@volontariapp/database';
-import { BadgeModel, UserModel, UserBadgeModel } from '@volontariapp/domain-user';
+import {
+  BadgeModel,
+  UserModel,
+  UserBadgeModel,
+  BadgeProgressModel,
+  BadgeProgressEventModel,
+} from '@volontariapp/domain-user';
 
 function resolveConfigDirectory(): string {
   const currentFileDir = dirname(fileURLToPath(import.meta.url));
@@ -35,6 +41,8 @@ export const AppDataSource = new DataSource({
     UserModel,
     BadgeModel,
     UserBadgeModel,
+    BadgeProgressModel,
+    BadgeProgressEventModel,
   ],
   synchronize: false,
   migrations: [
