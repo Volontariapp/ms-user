@@ -1,4 +1,4 @@
-import { UserEntity } from '@volontariapp/domain-user';
+import { UserEntity, UserStatus } from '@volontariapp/domain-user';
 import { UserRoles } from '@volontariapp/shared';
 
 export class UserFactory {
@@ -12,6 +12,9 @@ export class UserFactory {
     user.logoPath = overrides?.logoPath ?? undefined;
     user.totalImpactScore = overrides?.totalImpactScore ?? 0;
     user.badges = overrides?.badges ?? [];
+
+    user.status = overrides?.status ?? UserStatus.ACTIVE;
+    user.deletionRequestedAt = overrides?.deletionRequestedAt ?? undefined;
 
     return user;
   }

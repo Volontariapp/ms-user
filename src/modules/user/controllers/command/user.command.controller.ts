@@ -1,16 +1,20 @@
 import { Controller, UseGuards } from '@nestjs/common';
 import { GrpcMethod, Payload } from '@nestjs/microservices';
-import { GrpcInternalGuard, CurrentUser } from '@volontariapp/auth';
+import { GrpcInternalGuard, CurrentUser, JwtService } from '@volontariapp/auth';
 import type { AuthUser } from '@volontariapp/auth';
+import type { JwtPayload } from '@volontariapp/shared';
 import { USER_SERVICE_NAME, USER_COMMAND_METHODS } from '@volontariapp/contracts-nest';
+import { INVALID_REFRESH_TOKEN, USER_NOT_FOUND } from '@volontariapp/errors-nest';
 import {
   AuthService,
   BadgeId,
   ImpactScore,
   LoginInput,
   RefreshTokensInput,
+  UserEmail,
   UserId,
   UserService,
+  UserStatus,
 } from '@volontariapp/domain-user';
 import { UserTransformer } from '../../transformers/user.transformer.js';
 import { UserJobType } from '@volontariapp/messaging';
@@ -40,6 +44,7 @@ export class UserCommandController extends BaseCommandController {
   constructor(
     private readonly userService: UserService,
     private readonly authService: AuthService,
+    private readonly jwtService: JwtService,
     private readonly userTransformer: UserTransformer,
     private readonly storageClientService: StorageClientService,
     @InjectDataSource() dataSource: DataSource,
@@ -62,6 +67,11 @@ export class UserCommandController extends BaseCommandController {
   async login(@Payload() data: LoginCommandDTO): Promise<LoginResponseDTO> {
     this.logger.log('gRPC: Logging in user with email: ' + data.email);
     const tokens = await this.authService.logIn(new LoginInput(data.email, data.password));
+    const user = await this.userService.findByEmail(new UserEmail(data.email));
+    if (user.status === UserStatus.PENDING_DELETION) {
+      this.logger.warn(`Rejected login for user ${user.id} in PENDING_DELETION`);
+      throw USER_NOT_FOUND(data.email, 'email');
+    }
     return { auth: tokens };
   }
 
@@ -92,13 +102,31 @@ export class UserCommandController extends BaseCommandController {
   ): Promise<void> {
     return this.withFallback(UserJobType.FALLBACK_DELETE_USER, user.id, _data, async () => {
       this.logger.log('gRPC: Deleting user with id: ' + user.id);
-      await this.userService.delete(new UserId(user.id));
+      await this.userService.requestDeletion(new UserId(user.id));
     });
   }
 
   @GrpcMethod(USER_SERVICE_NAME, USER_COMMAND_METHODS.REFRESH_TOKEN)
   async refreshTokens(@Payload() data: RefreshTokenCommandDTO): Promise<LoginResponseDTO> {
     this.logger.log('gRPC: Refreshing tokens');
+    let payload: JwtPayload;
+    try {
+      payload = await this.jwtService.verifyRefreshToken<JwtPayload>(data.refreshToken);
+    } catch {
+      throw INVALID_REFRESH_TOKEN();
+    }
+    try {
+      const user = await this.userService.findById(new UserId(payload.id));
+      if (user.status === UserStatus.PENDING_DELETION) {
+        this.logger.warn(`Rejected refresh token for user ${user.id} in PENDING_DELETION`);
+        throw INVALID_REFRESH_TOKEN();
+      }
+    } catch (err) {
+      if (err instanceof Error && err.message === INVALID_REFRESH_TOKEN().message) {
+        throw err;
+      }
+      throw INVALID_REFRESH_TOKEN();
+    }
     const tokens = await this.authService.refreshTokens(new RefreshTokensInput(data.refreshToken));
     return { auth: tokens };
   }
@@ -167,7 +195,7 @@ export class UserCommandController extends BaseCommandController {
     @Payload() data: AdminDeleteUserCommandDTO,
   ): Promise<AdminDeleteUserResponseDTO> {
     this.logger.log(`gRPC: Admin deleting user with id: ${data.userId}`);
-    await this.userService.delete(new UserId(data.userId));
+    await this.userService.requestDeletion(new UserId(data.userId));
     return {};
   }
 }

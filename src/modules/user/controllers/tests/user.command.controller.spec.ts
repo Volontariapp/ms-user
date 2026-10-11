@@ -1,11 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserCommandController } from '../command/user.command.controller';
-import { UserService, AuthService } from '@volontariapp/domain-user';
+import { UserService, AuthService, UserStatus } from '@volontariapp/domain-user';
 import { UserTransformer } from '../../transformers/user.transformer';
 import { UpdateUserCommandDTO } from '../../dto/request/command/update-user.command.dto';
 import { DeleteUserCommandDTO } from '../../dto/request/command/delete-user.command.dto';
 import { AdminUpdateUserCommandDTO } from '../../dto/request/command/admin-update-user.command.dto';
 import { AdminDeleteUserCommandDTO } from '../../dto/request/command/admin-delete-user.command.dto';
+import { LoginCommandDTO } from '../../dto/request/command/login.command.dto';
+import { RefreshTokenCommandDTO } from '../../dto/request/command/refresh-token.command.dto';
 import { UserFactory } from '../../../../__test-utils__/factories/user.factory';
 import type { AuthUser } from '@volontariapp/auth';
 import { JwtService } from '@volontariapp/auth';
@@ -14,7 +16,7 @@ import { DataSource } from 'typeorm';
 import { getDataSourceToken } from '@nestjs/typeorm';
 import { JobsOutboxModel } from '@volontariapp/database';
 import { JobsOutboxRepository } from '@volontariapp/outbox';
-import { NotFoundError, PartialContentError } from '@volontariapp/errors';
+import { NotFoundError, PartialContentError, UnauthorizedError } from '@volontariapp/errors';
 import { UserJobType } from '@volontariapp/messaging';
 
 import { StorageClientService } from '../../clients/storage.client';
@@ -27,33 +29,44 @@ describe('UserCommandController', () => {
   let controller: UserCommandController;
   let userService: Partial<UserService>;
   let authService: Partial<AuthService>;
+  let jwtService: Partial<JwtService>;
   let userTransformer: Partial<UserTransformer>;
   let storageClientService: ReturnType<typeof createMockStorageClientService>;
   let mockJobsOutboxRepo: { save: jest.Mock };
   let mockDataSource: Partial<DataSource>;
-
 
   const mockAuthUser: AuthUser = {
     id: '123e4567-e89b-12d3-a456-426614174000',
     role: 'VOLUNTEER',
   };
 
-  const mockAdminUser: AuthUser = {
-    id: 'admin-id',
-    role: 'ADMIN',
-  };
-
   beforeEach(async () => {
     storageClientService = createMockStorageClientService();
     userService = {
       update: jest.fn().mockResolvedValue(UserFactory.create()),
-      delete: jest.fn().mockResolvedValue(undefined),
+      requestDeletion: jest.fn().mockResolvedValue(undefined),
+      findByEmail: jest.fn().mockResolvedValue(UserFactory.create({ status: UserStatus.ACTIVE })),
+      findById: jest.fn().mockResolvedValue(UserFactory.create({ status: UserStatus.ACTIVE })),
     };
 
     authService = {
       signUp: jest.fn(),
-      logIn: jest.fn(),
-      refreshTokens: jest.fn(),
+      logIn: jest.fn().mockResolvedValue({
+        accessToken: 'access-token',
+        refreshToken: 'refresh-token',
+      }),
+      refreshTokens: jest.fn().mockResolvedValue({
+        accessToken: 'new-access-token',
+        refreshToken: 'new-refresh-token',
+      }),
+    };
+
+    jwtService = {
+      verifyInternal: jest.fn(),
+      verifyRefreshToken: jest.fn().mockResolvedValue({
+        id: mockAuthUser.id,
+        role: mockAuthUser.role,
+      }),
     };
 
     userTransformer = {
@@ -81,9 +94,9 @@ describe('UserCommandController', () => {
       providers: [
         { provide: UserService, useValue: userService },
         { provide: AuthService, useValue: authService },
+        { provide: JwtService, useValue: jwtService },
         { provide: UserTransformer, useValue: userTransformer },
         { provide: StorageClientService, useValue: storageClientService },
-        { provide: JwtService, useValue: { verifyInternal: jest.fn() } },
         { provide: getDataSourceToken(), useValue: mockDataSource },
       ],
     }).compile();
@@ -91,6 +104,75 @@ describe('UserCommandController', () => {
     controller = module.get<UserCommandController>(UserCommandController);
   });
 
+  describe('login', () => {
+    it('should return tokens when user account is active', async () => {
+      const loginDto = new LoginCommandDTO();
+      loginDto.email = 'test@example.com';
+      loginDto.password = 'Password123!';
+
+      const result = await controller.login(loginDto);
+
+      expect(authService.logIn).toHaveBeenCalled();
+      expect(userService.findByEmail).toHaveBeenCalled();
+      expect(result).toEqual({
+        auth: {
+          accessToken: 'access-token',
+          refreshToken: 'refresh-token',
+        },
+      });
+    });
+
+    it('should reject login with USER_NOT_FOUND when user is PENDING_DELETION', async () => {
+      userService.findByEmail = jest
+        .fn()
+        .mockResolvedValue(UserFactory.create({ status: UserStatus.PENDING_DELETION }));
+
+      const loginDto = new LoginCommandDTO();
+      loginDto.email = 'pending@example.com';
+      loginDto.password = 'Password123!';
+
+      await expect(controller.login(loginDto)).rejects.toThrow(NotFoundError);
+    });
+  });
+
+  describe('refreshTokens', () => {
+    it('should refresh tokens when user account is active', async () => {
+      const refreshDto = new RefreshTokenCommandDTO();
+      refreshDto.refreshToken = 'valid-refresh-token';
+
+      const result = await controller.refreshTokens(refreshDto);
+
+      expect(jwtService.verifyRefreshToken).toHaveBeenCalledWith('valid-refresh-token');
+      expect(userService.findById).toHaveBeenCalled();
+      expect(authService.refreshTokens).toHaveBeenCalled();
+      expect(result).toEqual({
+        auth: {
+          accessToken: 'new-access-token',
+          refreshToken: 'new-refresh-token',
+        },
+      });
+    });
+
+    it('should reject refresh tokens with INVALID_REFRESH_TOKEN when user is PENDING_DELETION', async () => {
+      userService.findById = jest
+        .fn()
+        .mockResolvedValue(UserFactory.create({ status: UserStatus.PENDING_DELETION }));
+
+      const refreshDto = new RefreshTokenCommandDTO();
+      refreshDto.refreshToken = 'valid-refresh-token';
+
+      await expect(controller.refreshTokens(refreshDto)).rejects.toThrow(UnauthorizedError);
+    });
+
+    it('should reject refresh tokens when verifyRefreshToken fails', async () => {
+      jwtService.verifyRefreshToken = jest.fn().mockRejectedValue(new Error('Invalid signature'));
+
+      const refreshDto = new RefreshTokenCommandDTO();
+      refreshDto.refreshToken = 'corrupt-token';
+
+      await expect(controller.refreshTokens(refreshDto)).rejects.toThrow(UnauthorizedError);
+    });
+  });
 
   describe('updateUser with authentication', () => {
     it('should update user profile with JWT token', async () => {
@@ -129,14 +211,13 @@ describe('UserCommandController', () => {
     });
   });
 
-
   describe('deleteUser with authentication', () => {
-    it('should delete user with JWT token', async () => {
+    it('should request user deletion with JWT token', async () => {
       const deleteDto = new DeleteUserCommandDTO();
 
       await controller.deleteUser(deleteDto, mockAuthUser);
 
-      expect(userService.delete).toHaveBeenCalledWith(
+      expect(userService.requestDeletion).toHaveBeenCalledWith(
         expect.objectContaining({ value: mockAuthUser.id }),
       );
     });
@@ -165,7 +246,7 @@ describe('UserCommandController', () => {
 
       const result = await controller.adminDeleteUser(adminDeleteDto);
 
-      expect(userService.delete).toHaveBeenCalledWith(
+      expect(userService.requestDeletion).toHaveBeenCalledWith(
         expect.objectContaining({ value: 'other-user-id' }),
       );
       expect(result).toEqual({});
@@ -188,7 +269,7 @@ describe('UserCommandController', () => {
     it('should create a fallback job in outbox when an unexpected error occurs during a command', async () => {
       const mockError = new Error('Unexpected DB failure');
       const spyGetRepo = jest.spyOn(mockDataSource, 'getRepository');
-      userService.delete = jest.fn().mockRejectedValue(mockError);
+      userService.requestDeletion = jest.fn().mockRejectedValue(mockError);
 
       const deleteDto = new DeleteUserCommandDTO();
 
@@ -211,7 +292,7 @@ describe('UserCommandController', () => {
     it('should NOT create a fallback job for a 404 or 409 Api Error', async () => {
       const mockApiError = new NotFoundError('Not found');
 
-      userService.delete = jest.fn().mockRejectedValue(mockApiError);
+      userService.requestDeletion = jest.fn().mockRejectedValue(mockApiError);
 
       const deleteDto = new DeleteUserCommandDTO();
 
