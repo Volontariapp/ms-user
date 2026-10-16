@@ -35,6 +35,10 @@ export class UserDTO implements User {
   @IsString()
   logoPath?: string;
 
+  @IsOptional()
+  @IsUUID('4')
+  avatarFileId?: string;
+
   @IsInt()
   @Min(0)
   totalImpactScore!: number;

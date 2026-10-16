@@ -11,7 +11,11 @@ import { AppConfigService } from '../../config/app-config.service.js';
 import { SocialRelationshipQueryClientService } from './clients/social-relationship.query-client.js';
 import { SocialParticipationQueryClientService } from './clients/social-participation.query-client.js';
 import { SocialInteractionQueryClientService } from './clients/social-interaction.query-client.js';
-import { StorageClientService } from './clients/storage.client.js';
+import { StorageClientModule } from '@volontariapp/storage-client';
+import {
+  StorageClientConfigModule,
+  StorageClientConfigService,
+} from './storage-client-config.module.js';
 
 @Module({
   imports: [
@@ -21,6 +25,10 @@ import { StorageClientService } from './clients/storage.client.js';
         auth: configService.config.auth,
       }),
       inject: [AppConfigService],
+    }),
+    StorageClientModule.registerAsync({
+      imports: [StorageClientConfigModule],
+      useExisting: StorageClientConfigService,
     }),
   ],
   controllers: [
@@ -36,8 +44,7 @@ import { StorageClientService } from './clients/storage.client.js';
     SocialRelationshipQueryClientService,
     SocialParticipationQueryClientService,
     SocialInteractionQueryClientService,
-    StorageClientService,
   ],
-  exports: [StorageClientService],
+  exports: [StorageClientModule],
 })
 export class UserModule {}

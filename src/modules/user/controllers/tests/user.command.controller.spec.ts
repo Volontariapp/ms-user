@@ -1,14 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserCommandController } from '../command/user.command.controller';
+import { UserCommandController } from '../command/user.command.controller.js';
 import { UserService, AuthService, UserStatus } from '@volontariapp/domain-user';
-import { UserTransformer } from '../../transformers/user.transformer';
-import { UpdateUserCommandDTO } from '../../dto/request/command/update-user.command.dto';
-import { DeleteUserCommandDTO } from '../../dto/request/command/delete-user.command.dto';
-import { AdminUpdateUserCommandDTO } from '../../dto/request/command/admin-update-user.command.dto';
-import { AdminDeleteUserCommandDTO } from '../../dto/request/command/admin-delete-user.command.dto';
-import { LoginCommandDTO } from '../../dto/request/command/login.command.dto';
-import { RefreshTokenCommandDTO } from '../../dto/request/command/refresh-token.command.dto';
-import { UserFactory } from '../../../../__test-utils__/factories/user.factory';
+import { UserTransformer } from '../../transformers/user.transformer.js';
+import { UpdateUserCommandDTO } from '../../dto/request/command/update-user.command.dto.js';
+import { DeleteUserCommandDTO } from '../../dto/request/command/delete-user.command.dto.js';
+import { AdminUpdateUserCommandDTO } from '../../dto/request/command/admin-update-user.command.dto.js';
+import { AdminDeleteUserCommandDTO } from '../../dto/request/command/admin-delete-user.command.dto.js';
+import { LoginCommandDTO } from '../../dto/request/command/login.command.dto.js';
+import { RefreshTokenCommandDTO } from '../../dto/request/command/refresh-token.command.dto.js';
+import { UserFactory } from '../../../../__test-utils__/factories/user.factory.js';
 import type { AuthUser } from '@volontariapp/auth';
 import { JwtService } from '@volontariapp/auth';
 
@@ -16,14 +16,25 @@ import { DataSource } from 'typeorm';
 import { getDataSourceToken } from '@nestjs/typeorm';
 import { JobsOutboxModel } from '@volontariapp/database';
 import { JobsOutboxRepository } from '@volontariapp/outbox';
-import { NotFoundError, PartialContentError, UnauthorizedError } from '@volontariapp/errors';
+import {
+  GrpcStatus,
+  NotFoundError,
+  PartialContentError,
+  UnauthorizedError,
+} from '@volontariapp/errors';
 import { UserJobType } from '@volontariapp/messaging';
-
-import { StorageClientService } from '../../clients/storage.client';
-
-const createMockStorageClientService = (): jest.Mocked<Partial<StorageClientService>> => ({
-  verifyFilesExist: jest.fn().mockResolvedValue(undefined),
-});
+import {
+  StorageClientService,
+  StorageUnavailableError,
+  StorageRelayedError,
+  FILE_NOT_FOUND,
+  STORAGE_TIMEOUT,
+  STORAGE_ATTACHMENT_FAILED,
+} from '@volontariapp/storage-client';
+import {
+  createMockStorageClientService,
+  type MockStorageClientService,
+} from './storage-client.mock.js';
 
 describe('UserCommandController', () => {
   let controller: UserCommandController;
@@ -31,7 +42,7 @@ describe('UserCommandController', () => {
   let authService: Partial<AuthService>;
   let jwtService: Partial<JwtService>;
   let userTransformer: Partial<UserTransformer>;
-  let storageClientService: ReturnType<typeof createMockStorageClientService>;
+  let storageClientService: MockStorageClientService;
   let mockJobsOutboxRepo: { save: jest.Mock };
   let mockDataSource: Partial<DataSource>;
 
@@ -39,6 +50,10 @@ describe('UserCommandController', () => {
     id: '123e4567-e89b-12d3-a456-426614174000',
     role: 'VOLUNTEER',
   };
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
 
   beforeEach(async () => {
     storageClientService = createMockStorageClientService();
@@ -175,12 +190,13 @@ describe('UserCommandController', () => {
   });
 
   describe('updateUser with authentication', () => {
-    it('should update user profile with JWT token', async () => {
+    it('should update user profile without avatar when avatarFileId is not provided', async () => {
       const updateDto = new UpdateUserCommandDTO();
       updateDto.pseudo = 'newpseudo';
 
       const result = await controller.updateUser(updateDto, mockAuthUser);
 
+      expect(storageClientService.confirmUserAvatarAttachment).not.toHaveBeenCalled();
       expect(userService.update).toHaveBeenCalledWith(expect.anything(), expect.anything());
       expect(result).toEqual({
         user: { id: '123e4567-e89b-12d3-a456-426614174000' },
@@ -199,15 +215,147 @@ describe('UserCommandController', () => {
       );
     });
 
-    it('should verify avatarFileId via storageClientService when provided', async () => {
+    it('should confirm avatar attachment and update profile when avatarFileId is provided (cas heureux)', async () => {
+      const updateDto = new UpdateUserCommandDTO();
+      updateDto.avatarFileId = '123e4567-e89b-12d3-a456-426614174000';
+      const internalToken = 'test-internal-token';
+
+      const result = await controller.updateUser(updateDto, mockAuthUser, internalToken);
+
+      expect(storageClientService.confirmUserAvatarAttachment).toHaveBeenCalledWith(
+        mockAuthUser.id,
+        '123e4567-e89b-12d3-a456-426614174000',
+        { internalToken },
+      );
+      expect(userService.update).toHaveBeenCalledWith(
+        expect.objectContaining({ value: mockAuthUser.id }),
+        expect.anything(),
+      );
+      expect(result).toEqual({
+        user: { id: '123e4567-e89b-12d3-a456-426614174000' },
+      });
+    });
+
+    it('should call confirmUserAvatarAttachment with undefined options when internalToken is omitted', async () => {
       const updateDto = new UpdateUserCommandDTO();
       updateDto.avatarFileId = '123e4567-e89b-12d3-a456-426614174000';
 
       await controller.updateUser(updateDto, mockAuthUser);
 
-      expect(storageClientService.verifyFilesExist).toHaveBeenCalledWith([
+      expect(storageClientService.confirmUserAvatarAttachment).toHaveBeenCalledWith(
+        mockAuthUser.id,
         '123e4567-e89b-12d3-a456-426614174000',
-      ]);
+        undefined,
+      );
+    });
+
+    it('should throw StorageUnavailableError (503) when ms-storage times out (isStorageUnavailable)', async () => {
+      const updateDto = new UpdateUserCommandDTO();
+      updateDto.avatarFileId = '123e4567-e89b-12d3-a456-426614174000';
+
+      storageClientService.confirmUserAvatarAttachment.mockRejectedValue(
+        STORAGE_TIMEOUT(mockAuthUser.id, 2000),
+      );
+
+      await expect(controller.updateUser(updateDto, mockAuthUser)).rejects.toThrow(
+        StorageUnavailableError,
+      );
+      expect(userService.update).not.toHaveBeenCalled();
+    });
+
+    it('should throw StorageUnavailableError (503) when ms-storage is unreachable with connection failure', async () => {
+      const updateDto = new UpdateUserCommandDTO();
+      updateDto.avatarFileId = '123e4567-e89b-12d3-a456-426614174000';
+
+      storageClientService.confirmUserAvatarAttachment.mockRejectedValue(
+        STORAGE_ATTACHMENT_FAILED(mockAuthUser.id, '14 UNAVAILABLE: CONNECT ECONNREFUSED'),
+      );
+
+      const promise = controller.updateUser(updateDto, mockAuthUser);
+      await expect(promise).rejects.toThrow(StorageUnavailableError);
+      await expect(promise).rejects.toMatchObject({
+        statusCode: 503,
+        code: 'STORAGE_UNAVAILABLE',
+        details: { entityId: mockAuthUser.id },
+      });
+      expect(userService.update).not.toHaveBeenCalled();
+    });
+
+    it('should rethrow StorageRelayedError when storage refuses attachment (erreur relayee)', async () => {
+      const updateDto = new UpdateUserCommandDTO();
+      updateDto.avatarFileId = '123e4567-e89b-12d3-a456-426614174000';
+
+      const relayedError = new StorageRelayedError(
+        {
+          statusCode: 422,
+          code: 'FILE_ATTACHMENT_REFUSED',
+          message: 'Attachment refused: not confirmed',
+          details: { reason: 'NOT_CONFIRMED' },
+        },
+        GrpcStatus.FAILED_PRECONDITION,
+      );
+      storageClientService.confirmUserAvatarAttachment.mockRejectedValue(relayedError);
+
+      await expect(controller.updateUser(updateDto, mockAuthUser)).rejects.toThrow(
+        StorageRelayedError,
+      );
+      expect(userService.update).not.toHaveBeenCalled();
+    });
+
+    it('should rethrow when file is not clean / rejected (fichier non propre)', async () => {
+      const updateDto = new UpdateUserCommandDTO();
+      updateDto.avatarFileId = '123e4567-e89b-12d3-a456-426614174000';
+
+      const rejectedError = new StorageRelayedError(
+        {
+          statusCode: 422,
+          code: 'FILE_ATTACHMENT_REFUSED',
+          message: 'Attachment refused: content rejected',
+          details: { reason: 'CONTENT_REJECTED' },
+        },
+        GrpcStatus.FAILED_PRECONDITION,
+      );
+      storageClientService.confirmUserAvatarAttachment.mockRejectedValue(rejectedError);
+
+      await expect(controller.updateUser(updateDto, mockAuthUser)).rejects.toThrow(
+        StorageRelayedError,
+      );
+      expect(userService.update).not.toHaveBeenCalled();
+    });
+
+    it('should rethrow when user is not the owner or file is not found (mauvais proprietaire)', async () => {
+      const updateDto = new UpdateUserCommandDTO();
+      updateDto.avatarFileId = '123e4567-e89b-12d3-a456-426614174000';
+
+      const notFoundError = FILE_NOT_FOUND('123e4567-e89b-12d3-a456-426614174000');
+      storageClientService.confirmUserAvatarAttachment.mockRejectedValue(notFoundError);
+
+      await expect(controller.updateUser(updateDto, mockAuthUser)).rejects.toThrow(notFoundError);
+      expect(userService.update).not.toHaveBeenCalled();
+    });
+
+    it('should succeed when identical avatar is replayed (avatar identique rejoue - idempotence)', async () => {
+      const updateDto = new UpdateUserCommandDTO();
+      updateDto.avatarFileId = '123e4567-e89b-12d3-a456-426614174000';
+
+      const userWithAvatar = UserFactory.create({
+        avatarFileId: '123e4567-e89b-12d3-a456-426614174000',
+      });
+      userService.update = jest.fn().mockResolvedValue(userWithAvatar);
+      userTransformer.toUserDTO = jest.fn().mockReturnValue({
+        id: mockAuthUser.id,
+        avatarFileId: '123e4567-e89b-12d3-a456-426614174000',
+      });
+
+      const result = await controller.updateUser(updateDto, mockAuthUser);
+
+      expect(storageClientService.confirmUserAvatarAttachment).toHaveBeenCalledWith(
+        mockAuthUser.id,
+        '123e4567-e89b-12d3-a456-426614174000',
+        undefined,
+      );
+      expect(userService.update).toHaveBeenCalled();
+      expect(result.user?.avatarFileId).toBe('123e4567-e89b-12d3-a456-426614174000');
     });
   });
 

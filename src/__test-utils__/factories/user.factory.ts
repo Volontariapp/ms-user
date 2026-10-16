@@ -13,6 +13,8 @@ export class UserFactory {
     user.totalImpactScore = overrides?.totalImpactScore ?? 0;
     user.badges = overrides?.badges ?? [];
 
+    user.avatarFileId = overrides?.avatarFileId ?? undefined;
+
     user.status = overrides?.status ?? UserStatus.ACTIVE;
     user.deletionRequestedAt = overrides?.deletionRequestedAt ?? undefined;
 
