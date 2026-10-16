@@ -19,6 +19,9 @@ export class UserTransformer {
     if (userDTO.bio !== undefined) userEntity.bio = userDTO.bio;
     if (userDTO.role !== undefined) userEntity.role = userDTO.role as UserRoles;
     if (userDTO.logoPath !== undefined) userEntity.logoPath = userDTO.logoPath;
+    if (userDTO.avatarFileId !== undefined) {
+      userEntity.avatarFileId = userDTO.avatarFileId;
+    }
     if (userDTO.totalImpactScore !== undefined)
       userEntity.totalImpactScore = userDTO.totalImpactScore;
     if (userDTO.organisationInfo?.rna !== undefined) userEntity.rna = userDTO.organisationInfo.rna;
@@ -47,6 +50,9 @@ export class UserTransformer {
     userDTO.role = userEntity.role;
     if (userEntity.bio !== undefined) userDTO.bio = userEntity.bio;
     if (userEntity.logoPath !== undefined) userDTO.logoPath = userEntity.logoPath;
+    if (userEntity.avatarFileId !== undefined && userEntity.avatarFileId !== null) {
+      userDTO.avatarFileId = userEntity.avatarFileId;
+    }
     userDTO.totalImpactScore = userEntity.totalImpactScore;
     if (userEntity.rna !== undefined) userDTO.organisationInfo = { rna: userEntity.rna };
     userDTO.badges = userEntity.badges.map((badge) => this.badgeTransformer.toBadgeDTO(badge));
@@ -61,6 +67,9 @@ export class UserTransformer {
     publicUserDTO.role = userEntity.role;
     if (userEntity.bio !== undefined) publicUserDTO.bio = userEntity.bio;
     if (userEntity.logoPath !== undefined) publicUserDTO.logoPath = userEntity.logoPath;
+    if (userEntity.avatarFileId !== undefined && userEntity.avatarFileId !== null) {
+      publicUserDTO.avatarFileId = userEntity.avatarFileId;
+    }
     publicUserDTO.totalImpactScore = userEntity.totalImpactScore;
     if (userEntity.rna !== undefined) publicUserDTO.organisationInfo = { rna: userEntity.rna };
     publicUserDTO.badges = userEntity.badges.map((badge) =>
@@ -86,7 +95,7 @@ export class UserTransformer {
     return new UpdateUserInput({
       pseudo: dto.pseudo,
       bio: dto.bio,
-      logoPath: dto.logoPath,
+      avatarFileId: dto.avatarFileId,
       rna: dto.organisationInfo?.rna,
       previousPassword: dto.previousPassword,
       newPassword: dto.newPassword,

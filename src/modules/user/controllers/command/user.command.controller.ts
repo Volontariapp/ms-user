@@ -1,6 +1,6 @@
 import { Controller, UseGuards } from '@nestjs/common';
 import { GrpcMethod, Payload } from '@nestjs/microservices';
-import { GrpcInternalGuard, CurrentUser, JwtService } from '@volontariapp/auth';
+import { GrpcInternalGuard, CurrentUser, InternalToken, JwtService } from '@volontariapp/auth';
 import type { AuthUser } from '@volontariapp/auth';
 import type { JwtPayload } from '@volontariapp/shared';
 import { USER_SERVICE_NAME, USER_COMMAND_METHODS } from '@volontariapp/contracts-nest';
@@ -37,7 +37,11 @@ import { AdminUpdateUserResponseDTO } from '../../dto/response/admin-update-user
 import { AdminDeleteUserCommandDTO } from '../../dto/request/command/admin-delete-user.command.dto.js';
 import { AdminDeleteUserResponseDTO } from '../../dto/response/admin-delete-user.response.dto.js';
 
-import { StorageClientService } from '../../clients/storage.client.js';
+import {
+  StorageClientService,
+  StorageUnavailableError,
+  isStorageUnavailable,
+} from '@volontariapp/storage-client';
 
 @Controller()
 export class UserCommandController extends BaseCommandController {
@@ -80,9 +84,26 @@ export class UserCommandController extends BaseCommandController {
   async updateUser(
     @Payload() data: UpdateUserCommandDTO,
     @CurrentUser() user: AuthUser,
+    @InternalToken() internalToken?: string,
   ): Promise<UpdateUserResponseDTO> {
     if (data.avatarFileId) {
-      await this.storageClientService.verifyFilesExist([data.avatarFileId]);
+      try {
+        await this.storageClientService.confirmUserAvatarAttachment(
+          user.id,
+          data.avatarFileId,
+          internalToken ? { internalToken } : undefined,
+        );
+      } catch (error: unknown) {
+        if (isStorageUnavailable(error)) {
+          this.logger.warn(
+            `ms-storage unavailable for user avatar ${user.id}: ${
+              error instanceof Error ? error.message : String(error)
+            }`,
+          );
+          throw new StorageUnavailableError(user.id);
+        }
+        throw error;
+      }
     }
     return this.withFallback(UserJobType.FALLBACK_UPDATE_USER, user.id, data, async () => {
       this.logger.log('gRPC: Updating user with id: ' + user.id);

@@ -23,6 +23,10 @@ export class PublicUserDTO implements UserPublic {
   @IsString()
   logoPath?: string;
 
+  @IsOptional()
+  @IsUUID('4')
+  avatarFileId?: string;
+
   @IsInt()
   @Min(0)
   totalImpactScore!: number;
