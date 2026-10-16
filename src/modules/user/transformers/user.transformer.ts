@@ -19,7 +19,7 @@ export class UserTransformer {
     if (userDTO.bio !== undefined) userEntity.bio = userDTO.bio;
     if (userDTO.role !== undefined) userEntity.role = userDTO.role as UserRoles;
     if (userDTO.logoPath !== undefined) userEntity.logoPath = userDTO.logoPath;
-    if (userDTO.avatarFileId !== undefined && userDTO.avatarFileId !== '') {
+    if (userDTO.avatarFileId !== undefined) {
       userEntity.avatarFileId = userDTO.avatarFileId;
     }
     if (userDTO.totalImpactScore !== undefined)

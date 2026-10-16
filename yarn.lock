@@ -4608,7 +4608,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@volontariapp/domain-user@npm:2.11.2":
+"@volontariapp/domain-user@npm:^2.11.2":
   version: 2.11.2
   resolution: "@volontariapp/domain-user@npm:2.11.2"
   dependencies:
@@ -4838,7 +4838,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@volontariapp/storage-client@npm:0.3.0":
+"@volontariapp/storage-client@npm:^0.3.0":
   version: 0.3.0
   resolution: "@volontariapp/storage-client@npm:0.3.0"
   dependencies:
@@ -9729,7 +9729,7 @@ __metadata:
     "@volontariapp/contracts": "npm:^4.3.16"
     "@volontariapp/contracts-nest": "npm:^3.3.8"
     "@volontariapp/database": "npm:^3.10.2"
-    "@volontariapp/domain-user": "npm:2.11.2"
+    "@volontariapp/domain-user": "npm:^2.11.2"
     "@volontariapp/errors": "npm:^0.6.5"
     "@volontariapp/errors-nest": "npm:^0.13.5"
     "@volontariapp/eslint-config": "npm:^2.2.5"
@@ -9739,7 +9739,7 @@ __metadata:
     "@volontariapp/monitoring": "npm:^2.2.2"
     "@volontariapp/outbox": "npm:^0.10.6"
     "@volontariapp/shared": "npm:^0.14.0"
-    "@volontariapp/storage-client": "npm:0.3.0"
+    "@volontariapp/storage-client": "npm:^0.3.0"
     "@volontariapp/validation-nest": "npm:^0.1.5"
     axios: "npm:^1.7.9"
     bullmq: "npm:^5.76.10"
