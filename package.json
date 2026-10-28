@@ -143,6 +143,7 @@
     "glob": "^13.0.6",
     "node-domexception": "1.0.0",
     "gaxios": "^6.7.1",
-    "webpack": "5.112.2"
+    "webpack": "5.112.2",
+    "protobufjs@npm:8.0.0": "npm:8.0.1"
   }
 }
