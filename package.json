@@ -122,7 +122,7 @@
     "tsconfig-paths": "^4.2.0",
     "typescript": "5.7.3",
     "typescript-eslint": "^8.72.0",
-    "webpack": "^5.112.2"
+    "webpack": "^5.97.1"
   },
   "lint-staged": {
     "*.{ts,js,mjs,cjs}": [
@@ -142,6 +142,7 @@
   "resolutions": {
     "glob": "^13.0.6",
     "node-domexception": "1.0.0",
-    "gaxios": "^6.7.1"
+    "gaxios": "^6.7.1",
+    "webpack": "5.112.2"
   }
 }
