@@ -68,14 +68,14 @@
     "@volontariapp/storage-client": "0.3.6",
     "@volontariapp/validation-nest": "0.1.5",
     "axios": "^1.20.0",
-    "bullmq": "^5.76.10",
+    "bullmq": "^5.81.5",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.15.1",
     "joi": "^18.3.0",
     "pg": "^8.23.1",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
-    "typeorm": "^0.3.28"
+    "typeorm": "^0.3.31"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.7",
