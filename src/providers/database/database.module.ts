@@ -10,6 +10,7 @@ import {
   UserModel,
   BadgeProgressModel,
   BadgeProgressEventModel,
+  ImpactScoreCreditModel,
 } from '@volontariapp/domain-user';
 
 const entities = [
@@ -18,6 +19,7 @@ const entities = [
   UserBadgeModel,
   BadgeProgressModel,
   BadgeProgressEventModel,
+  ImpactScoreCreditModel,
   JobsOutboxModel,
   EventQueueModel,
 ];

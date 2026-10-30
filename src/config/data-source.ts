@@ -12,6 +12,7 @@ import {
   UserBadgeModel,
   BadgeProgressModel,
   BadgeProgressEventModel,
+  ImpactScoreCreditModel,
 } from '@volontariapp/domain-user';
 
 function resolveConfigDirectory(): string {
@@ -43,6 +44,7 @@ export const AppDataSource = new DataSource({
     UserBadgeModel,
     BadgeProgressModel,
     BadgeProgressEventModel,
+    ImpactScoreCreditModel,
   ],
   synchronize: false,
   migrations: [
