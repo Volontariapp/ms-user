@@ -1,7 +1,11 @@
-import type { GetMyFollowsProfilesQuery, PaginationRequest } from '@volontariapp/contracts-nest';
-import { IsOptional } from 'class-validator';
+import type { GetMyFollowsProfilesQuery } from '@volontariapp/contracts-nest';
+import { Type } from 'class-transformer';
+import { IsOptional, ValidateNested } from 'class-validator';
+import { PaginationRequestDTO } from '../../../../../common/dto/pagination.dto.js';
 
 export class GetMyFollowsProfilesQueryDTO implements GetMyFollowsProfilesQuery {
   @IsOptional()
-  pagination: PaginationRequest | undefined;
+  @ValidateNested()
+  @Type(() => PaginationRequestDTO)
+  pagination: PaginationRequestDTO | undefined;
 }
