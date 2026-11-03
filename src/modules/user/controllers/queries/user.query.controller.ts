@@ -3,10 +3,8 @@ import { GrpcMethod, Payload } from '@nestjs/microservices';
 import { GrpcInternalGuard, CurrentUser, InternalToken } from '@volontariapp/auth';
 import type { AuthUser } from '@volontariapp/auth';
 import { USER_SERVICE_NAME, USER_QUERY_METHODS } from '@volontariapp/contracts-nest';
-import type {
-  GetEventParticipantsProfilesQuery,
-  GetPostLikersProfilesQuery,
-} from '@volontariapp/contracts-nest';
+import { GetEventParticipantsProfilesQueryDTO } from '../../dto/request/query/get-event-participants-profiles.query.dto.js';
+import { GetPostLikersProfilesQueryDTO } from '../../dto/request/query/get-post-likers-profiles.query.dto.js';
 import { GetUserQueryDTO } from '../../dto/request/query/get-user.query.dto.js';
 import { UserResponseDTO } from '../../dto/response/user.response.dto.js';
 import { Logger } from '@volontariapp/logger';
@@ -32,6 +30,9 @@ import { GetUsersByIdsResponseDTO } from '../../dto/response/get-users-by-ids.re
 import { SocialParticipationQueryClientService } from '../../clients/social-participation.query-client.js';
 import { SocialInteractionQueryClientService } from '../../clients/social-interaction.query-client.js';
 import { PublicUserResponseDto } from '../../dto/response/public.user.response.dto.js';
+
+export const DEFAULT_PAGE = 1;
+export const DEFAULT_LIMIT = 10;
 
 @Controller()
 export class UserQueryController {
@@ -84,16 +85,11 @@ export class UserQueryController {
   @GrpcMethod(USER_SERVICE_NAME, USER_QUERY_METHODS.LIST_USERS)
   async listUsers(@Payload() data: ListUsersQueryDTO): Promise<ListUsersResponseDTO> {
     this.logger.log('gRPC: Listing all users');
-    const pagination = data.pagination
-      ? new PaginationInput(
-          data.pagination.limit,
-          (data.pagination.page - 1) * data.pagination.limit,
-        )
-      : undefined;
+    const page = data.pagination?.page ?? DEFAULT_PAGE;
+    const limit = data.pagination?.limit ?? DEFAULT_LIMIT;
+    const pagination = new PaginationInput(limit, (page - 1) * limit);
     const result = await this.userService.findAll(pagination);
     const activeUsers = result.users.filter((user) => user.status !== UserStatus.PENDING_DELETION);
-    const page = data.pagination?.page ?? 1;
-    const limit = data.pagination?.limit ?? result.total;
     return {
       users: activeUsers.map((user) => this.userTransformer.toUserDTO(user)),
       pagination: {
@@ -202,7 +198,7 @@ export class UserQueryController {
   @UseGuards(GrpcInternalGuard)
   @GrpcMethod(USER_SERVICE_NAME, 'GetEventParticipantsProfiles')
   async getEventParticipantsProfiles(
-    @Payload() data: GetEventParticipantsProfilesQuery,
+    @Payload() data: GetEventParticipantsProfilesQueryDTO,
     @CurrentUser() user: AuthUser,
     @InternalToken() token: string,
   ): Promise<ListUsersResponseDTO> {
@@ -240,7 +236,7 @@ export class UserQueryController {
   @UseGuards(GrpcInternalGuard)
   @GrpcMethod(USER_SERVICE_NAME, 'GetPostLikersProfiles')
   async getPostLikersProfiles(
-    @Payload() data: GetPostLikersProfilesQuery,
+    @Payload() data: GetPostLikersProfilesQueryDTO,
     @CurrentUser() user: AuthUser,
     @InternalToken() token: string,
   ): Promise<ListUsersResponseDTO> {
