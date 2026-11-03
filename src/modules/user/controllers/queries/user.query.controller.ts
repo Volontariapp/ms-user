@@ -10,13 +10,7 @@ import { UserResponseDTO } from '../../dto/response/user.response.dto.js';
 import { Logger } from '@volontariapp/logger';
 import { UserTransformer } from '../../transformers/user.transformer.js';
 import { USER_NOT_FOUND } from '@volontariapp/errors-nest';
-import {
-  UserId,
-  UserService,
-  PaginationInput,
-  UserEntity,
-  UserStatus,
-} from '@volontariapp/domain-user';
+import { UserId, UserService, PaginationInput, UserStatus } from '@volontariapp/domain-user';
 import { ListUsersQueryDTO } from '../../dto/request/query/list-users.query.dto.js';
 import { ListUsersResponseDTO } from '../../dto/response/list-users.response.dto.js';
 import { AdminGetUserQueryDTO } from '../../dto/request/query/admin-get-user.query.dto.js';
@@ -29,6 +23,7 @@ import { GetUsersByIdsResponseDTO } from '../../dto/response/get-users-by-ids.re
 
 import { SocialParticipationQueryClientService } from '../../clients/social-participation.query-client.js';
 import { SocialInteractionQueryClientService } from '../../clients/social-interaction.query-client.js';
+import { findActiveUsersInOrder } from '../../helpers/find-active-users-in-order.js';
 import { PublicUserResponseDto } from '../../dto/response/public.user.response.dto.js';
 
 export const DEFAULT_PAGE = 1;
@@ -64,12 +59,7 @@ export class UserQueryController {
   @GrpcMethod(USER_SERVICE_NAME, 'GetUsersByIds')
   async getUsersByIds(@Payload() data: GetUsersByIdsQueryDTO): Promise<GetUsersByIdsResponseDTO> {
     this.logger.log(`gRPC: Getting users by ids: ${String(data.ids.length)}`);
-    const users = await Promise.all(
-      data.ids.map((id) => this.userService.findById(new UserId(id)).catch(() => null)),
-    );
-    const validUsers = users.filter(
-      (u): u is UserEntity => u !== null && u.status !== UserStatus.PENDING_DELETION,
-    );
+    const validUsers = await findActiveUsersInOrder(this.userService, data.ids);
 
     return {
       users: validUsers.map((u) => this.userTransformer.toUserDTO(u)),
@@ -88,18 +78,18 @@ export class UserQueryController {
     const page = data.pagination?.page ?? DEFAULT_PAGE;
     const limit = data.pagination?.limit ?? DEFAULT_LIMIT;
     const pagination = new PaginationInput(limit, (page - 1) * limit);
-    const result = await this.userService.findAll(pagination);
-    const activeUsers = result.users.filter((user) => user.status !== UserStatus.PENDING_DELETION);
+    const result = await this.userService.findPage(pagination, [UserStatus.PENDING_DELETION]);
     return {
-      users: activeUsers.map((user) => this.userTransformer.toUserDTO(user)),
+      users: result.users.map((user) => this.userTransformer.toUserDTO(user)),
       pagination: {
-        total: activeUsers.length,
+        total: result.total,
         page,
         limit,
-        totalPages: limit > 0 ? Math.ceil(activeUsers.length / limit) : 1,
+        totalPages: limit > 0 ? Math.ceil(result.total / limit) : 1,
       },
     };
   }
+
   @UseGuards(GrpcInternalGuard)
   @GrpcMethod(USER_SERVICE_NAME, 'AdminGetUser')
   async adminGetUser(@Payload() data: AdminGetUserQueryDTO): Promise<AdminUserResponseDTO> {
@@ -142,12 +132,7 @@ export class UserQueryController {
       page,
     );
 
-    const users = await Promise.all(
-      ids.map((id) => this.userService.findById(new UserId(id)).catch(() => null)),
-    );
-    const validUsers = users.filter(
-      (u): u is UserEntity => u !== null && u.status !== UserStatus.PENDING_DELETION,
-    );
+    const validUsers = await findActiveUsersInOrder(this.userService, ids);
 
     return {
       users: validUsers.map((u) => this.userTransformer.toUserDTO(u)),
@@ -177,12 +162,7 @@ export class UserQueryController {
       page,
     );
 
-    const users = await Promise.all(
-      ids.map((id) => this.userService.findById(new UserId(id)).catch(() => null)),
-    );
-    const validUsers = users.filter(
-      (u): u is UserEntity => u !== null && u.status !== UserStatus.PENDING_DELETION,
-    );
+    const validUsers = await findActiveUsersInOrder(this.userService, ids);
 
     return {
       users: validUsers.map((u) => this.userTransformer.toUserDTO(u)),
@@ -215,12 +195,7 @@ export class UserQueryController {
       page,
     );
 
-    const users = await Promise.all(
-      ids.map((id) => this.userService.findById(new UserId(id)).catch(() => null)),
-    );
-    const validUsers = users.filter(
-      (u): u is UserEntity => u !== null && u.status !== UserStatus.PENDING_DELETION,
-    );
+    const validUsers = await findActiveUsersInOrder(this.userService, ids);
 
     return {
       users: validUsers.map((u) => this.userTransformer.toUserDTO(u)),
@@ -253,12 +228,7 @@ export class UserQueryController {
       page,
     );
 
-    const users = await Promise.all(
-      ids.map((id) => this.userService.findById(new UserId(id)).catch(() => null)),
-    );
-    const validUsers = users.filter(
-      (u): u is UserEntity => u !== null && u.status !== UserStatus.PENDING_DELETION,
-    );
+    const validUsers = await findActiveUsersInOrder(this.userService, ids);
 
     return {
       users: validUsers.map((u) => this.userTransformer.toUserDTO(u)),
