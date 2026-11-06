@@ -7,6 +7,7 @@ import { BadgeCommandController } from './controllers/command/badge.command.cont
 import { BadgeQueryController } from './controllers/queries/badge.query.controller.js';
 import { UserTransformer } from './transformers/user.transformer.js';
 import { BadgeTransformer } from './transformers/badge.transformer.js';
+import { BadgeProgressService } from './services/badge-progress.service.js';
 import { AppConfigService } from '../../config/app-config.service.js';
 import { SocialRelationshipQueryClientService } from './clients/social-relationship.query-client.js';
 import { SocialParticipationQueryClientService } from './clients/social-participation.query-client.js';
@@ -41,6 +42,7 @@ import {
   providers: [
     UserTransformer,
     BadgeTransformer,
+    BadgeProgressService,
     SocialRelationshipQueryClientService,
     SocialParticipationQueryClientService,
     SocialInteractionQueryClientService,

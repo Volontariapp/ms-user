@@ -1,5 +1,5 @@
 import type { Badge } from '@volontariapp/contracts-nest';
-import { IsOptional, IsString, IsUUID, ValidateNested } from 'class-validator';
+import { IsInt, IsOptional, IsString, IsUUID, ValidateNested } from 'class-validator';
 import { TimestampDTO } from './timestamp.dto.js';
 import { Type } from 'class-transformer';
 
@@ -23,4 +23,7 @@ export class BadgeDTO implements Badge {
   @ValidateNested()
   @Type(() => TimestampDTO)
   awardedAt: TimestampDTO | undefined;
+
+  @IsInt()
+  points!: number;
 }
