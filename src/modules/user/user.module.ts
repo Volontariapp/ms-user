@@ -5,9 +5,11 @@ import { UserQueryController } from './controllers/queries/user.query.controller
 import { UserTestController } from './controllers/tests/user.test.controller.js';
 import { BadgeCommandController } from './controllers/command/badge.command.controller.js';
 import { BadgeQueryController } from './controllers/queries/badge.query.controller.js';
+import { LeaderboardQueryController } from './controllers/queries/leaderboard.query.controller.js';
 import { UserTransformer } from './transformers/user.transformer.js';
 import { BadgeTransformer } from './transformers/badge.transformer.js';
 import { BadgeProgressService } from './services/badge-progress.service.js';
+import { LeaderboardService } from './services/leaderboard.service.js';
 import { AppConfigService } from '../../config/app-config.service.js';
 import { SocialRelationshipQueryClientService } from './clients/social-relationship.query-client.js';
 import { SocialParticipationQueryClientService } from './clients/social-participation.query-client.js';
@@ -38,11 +40,13 @@ import {
     UserTestController,
     BadgeCommandController,
     BadgeQueryController,
+    LeaderboardQueryController,
   ],
   providers: [
     UserTransformer,
     BadgeTransformer,
     BadgeProgressService,
+    LeaderboardService,
     SocialRelationshipQueryClientService,
     SocialParticipationQueryClientService,
     SocialInteractionQueryClientService,
