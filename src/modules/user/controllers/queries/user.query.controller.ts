@@ -47,7 +47,7 @@ export class UserQueryController {
     @Payload() _data: GetUserQueryDTO,
     @CurrentUser() user: AuthUser,
   ): Promise<UserResponseDTO> {
-    this.logger.log('gRPC: Getting user with id: ' + user.id);
+    this.logger.debug('gRPC: Getting user with id: ' + user.id);
     const userEntity = await this.userService.findById(new UserId(user.id));
     if (userEntity.status === UserStatus.PENDING_DELETION) {
       throw USER_NOT_FOUND(user.id);
@@ -58,7 +58,7 @@ export class UserQueryController {
   @UseGuards(GrpcInternalGuard)
   @GrpcMethod(USER_SERVICE_NAME, 'GetUsersByIds')
   async getUsersByIds(@Payload() data: GetUsersByIdsQueryDTO): Promise<GetUsersByIdsResponseDTO> {
-    this.logger.log(`gRPC: Getting users by ids: ${String(data.ids.length)}`);
+    this.logger.debug(`gRPC: Getting users by ids: ${String(data.ids.length)}`);
     const validUsers = await findActiveUsersInOrder(this.userService, data.ids);
 
     return {
@@ -74,7 +74,7 @@ export class UserQueryController {
 
   @GrpcMethod(USER_SERVICE_NAME, USER_QUERY_METHODS.LIST_USERS)
   async listUsers(@Payload() data: ListUsersQueryDTO): Promise<ListUsersResponseDTO> {
-    this.logger.log('gRPC: Listing all users');
+    this.logger.debug('gRPC: Listing all users');
     const page = data.pagination?.page ?? DEFAULT_PAGE;
     const limit = data.pagination?.limit ?? DEFAULT_LIMIT;
     const pagination = new PaginationInput(limit, (page - 1) * limit);
@@ -104,7 +104,7 @@ export class UserQueryController {
   @UseGuards(GrpcInternalGuard)
   @GrpcMethod(USER_SERVICE_NAME, 'GetPublicUser')
   async getPublicUser(@Payload() data: AdminGetUserQueryDTO): Promise<PublicUserResponseDto> {
-    this.logger.log(`gRPC: Getting public user profile with id: ${data.userId}`);
+    this.logger.debug(`gRPC: Getting public user profile with id: ${data.userId}`);
     const user = await this.userService.findById(new UserId(data.userId));
     if (user.status === UserStatus.PENDING_DELETION) {
       throw USER_NOT_FOUND(data.userId);
@@ -122,7 +122,7 @@ export class UserQueryController {
     /**
      * Il faut implementer le cas asynchrone, si on failed alors on renvoie une 206, et on cree un event
      */
-    this.logger.log(`gRPC: Getting follows profiles for user: ${user.id}`);
+    this.logger.debug(`gRPC: Getting follows profiles for user: ${user.id}`);
     const page = data.pagination?.page ?? 1;
     const limit = data.pagination?.limit ?? 10;
 
@@ -152,7 +152,7 @@ export class UserQueryController {
     @CurrentUser() user: AuthUser,
     @InternalToken() token: string,
   ): Promise<ListUsersResponseDTO> {
-    this.logger.log(`gRPC: Getting followers profiles for user: ${user.id}`);
+    this.logger.debug(`gRPC: Getting followers profiles for user: ${user.id}`);
     const page = data.pagination?.page ?? 1;
     const limit = data.pagination?.limit ?? 10;
 
@@ -182,7 +182,7 @@ export class UserQueryController {
     @CurrentUser() user: AuthUser,
     @InternalToken() token: string,
   ): Promise<ListUsersResponseDTO> {
-    this.logger.log(
+    this.logger.debug(
       `gRPC: Getting event participants profiles for event: ${data.eventId} by user ${user.id}`,
     );
     const page = data.pagination?.page ?? 1;
@@ -215,7 +215,7 @@ export class UserQueryController {
     @CurrentUser() user: AuthUser,
     @InternalToken() token: string,
   ): Promise<ListUsersResponseDTO> {
-    this.logger.log(
+    this.logger.debug(
       `gRPC: Getting post likers profiles for post: ${data.postId} by user ${user.id}`,
     );
     const page = data.pagination?.page ?? 1;

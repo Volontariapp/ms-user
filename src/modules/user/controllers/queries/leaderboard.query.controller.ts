@@ -28,7 +28,7 @@ export class LeaderboardQueryController {
   @GrpcMethod(USER_SERVICE_NAME, 'GetLeaderboard')
   async getLeaderboard(@Payload() data: GetLeaderboardQuery): Promise<GetLeaderboardResponse> {
     const scope = resolveScope(data.scope);
-    this.logger.log(`gRPC: Getting leaderboard for scope: ${String(scope)}`);
+    this.logger.debug(`gRPC: Getting leaderboard for scope: ${String(scope)}`);
     const page = await this.leaderboardService.getPage(scope, data.limit, data.cursor);
     return {
       entries: page.rows.map((row) => toEntry(row, scope)),
@@ -43,7 +43,7 @@ export class LeaderboardQueryController {
     @CurrentUser() user: AuthUser,
   ): Promise<GetMyRankResponse> {
     const scope = resolveScope(data.scope);
-    this.logger.log(`gRPC: Getting leaderboard rank for user: ${user.id}`);
+    this.logger.debug(`gRPC: Getting leaderboard rank for user: ${user.id}`);
     const result = await this.leaderboardService.getMyRank(scope, user.id);
     return {
       me: result.me ? toEntry(result.me, scope) : undefined,
