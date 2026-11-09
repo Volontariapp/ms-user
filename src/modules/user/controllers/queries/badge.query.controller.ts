@@ -25,21 +25,21 @@ export class BadgeQueryController {
 
   @GrpcMethod(BADGE_SERVICE_NAME, BADGE_QUERY_METHODS.GET_BADGE)
   async getBadge(@Payload() data: GetBadgeQueryDTO): Promise<BadgeResponseDTO> {
-    this.logger.log(`gRPC: Getting badge with id: ${data.badgeId}`);
+    this.logger.debug(`gRPC: Getting badge with id: ${data.badgeId}`);
     const badge = await this.badgeService.findById(new BadgeId(data.badgeId));
     return { badge: this.badgeTransformer.toBadgeDTO(badge) };
   }
 
   @GrpcMethod(BADGE_SERVICE_NAME, BADGE_QUERY_METHODS.GET_BADGE_BY_SLUG)
   async getBadgeBySlug(@Payload() data: { slug: string }): Promise<BadgeResponseDTO> {
-    this.logger.log(`gRPC: Getting badge with slug: ${data.slug}`);
+    this.logger.debug(`gRPC: Getting badge with slug: ${data.slug}`);
     const badge = await this.badgeService.findBySlug(new BadgeSlug(data.slug));
     return { badge: this.badgeTransformer.toBadgeDTO(badge) };
   }
 
   @GrpcMethod(BADGE_SERVICE_NAME, BADGE_QUERY_METHODS.LIST_BADGES)
   async listBadges(): Promise<ListBadgesResponseDTO> {
-    this.logger.log('gRPC: Listing all badges');
+    this.logger.debug('gRPC: Listing all badges');
     const badges = await this.badgeService.findAll();
     return { badges: badges.map((b) => this.badgeTransformer.toBadgeDTO(b)) };
   }
@@ -50,7 +50,7 @@ export class BadgeQueryController {
     @Payload() _data: GetMyBadgeProgressQueryDTO,
     @CurrentUser() user: AuthUser,
   ): Promise<GetMyBadgeProgressResponseDTO> {
-    this.logger.log(`gRPC: Getting badge progress for user: ${user.id}`);
+    this.logger.debug(`gRPC: Getting badge progress for user: ${user.id}`);
     const progress = await this.badgeProgressService.getProgress(user.id);
     return { badges: progress.map((view) => this.badgeTransformer.toBadgeProgressDTO(view)) };
   }
