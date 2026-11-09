@@ -8,7 +8,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module.js';
 import { GRPC_MICROSERVICES, getGrpcOptions } from '@volontariapp/contracts-nest';
 import { AppConfigService } from './config/app-config.service.js';
-import { loadConfig } from '@volontariapp/config';
+import { configureLogger, loadConfig } from '@volontariapp/config';
 import { CustomConfig } from './config/base-config.js';
 import { Logger } from '@volontariapp/logger';
 import { registerUserMappings } from '@volontariapp/domain-user';
@@ -28,7 +28,7 @@ function resolveConfigDirectory(): string {
 
 async function bootstrap() {
   const appConfig = loadConfig(resolveConfigDirectory(), CustomConfig);
-  Logger.setDefaultConfig({ format: appConfig.logger.format });
+  configureLogger(appConfig.logger);
   const logger = new Logger({
     context: 'MS-USER',
     format: appConfig.logger.format,
